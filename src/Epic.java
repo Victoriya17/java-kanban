@@ -16,6 +16,14 @@ public class Epic extends Task {
         return subtasks;
     }
 
+    public void deleteSubtask(int subtaskId) {
+        subtasks.remove(subtaskId);
+    }
+
+    public void deleteAllSubtask() {
+        subtasks.clear();
+    }
+
     public void updateEpicStatus() {
         boolean allNew = true;
         boolean allDone = true;

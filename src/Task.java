@@ -1,16 +1,9 @@
 import java.util.Objects;
 
 public class Task {
-    public String nameOfTask;
-    public String descriptionOfTask;
-    public int id;
-
-    public enum TaskStatus {
-        NEW,
-        IN_PROGRESS,
-        DONE
-    }
-
+    private String nameOfTask;
+    private String descriptionOfTask;
+    private int id;
     private TaskStatus status;
 
     public String getNameOfTask() {
@@ -21,16 +14,17 @@ public class Task {
         return descriptionOfTask;
     }
 
+
+    public int getId() {
+        return id;
+    }
+
     public TaskStatus getStatus() {
         return status;
     }
 
     public void setStatus(TaskStatus status) {
         this.status = status;
-    }
-
-    public int getId() {
-        return id;
     }
 
     @Override
