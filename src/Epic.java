@@ -9,7 +9,9 @@ public class Epic extends Task {
     }
 
     public void addSubtask(Subtask subtask) {
-        subtasks.add(subtask);
+        if (subtask.getEpic() != this) {
+            subtasks.add(subtask);
+        }
     }
 
     public List<Subtask> getSubtasks() {
@@ -44,5 +46,10 @@ public class Epic extends Task {
         } else {
             this.setStatus(TaskStatus.IN_PROGRESS);
         }
+    }
+
+    @Override
+    public Epic copy() {
+        return new Epic(getNameOfTask(), getDescriptionOfTask(), getId(), getStatus());
     }
 }

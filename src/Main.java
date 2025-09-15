@@ -1,18 +1,25 @@
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
-//        TaskManager taskManager = new TaskManager();
-//        taskManager.addTask("Почистить фильтр", "Фильтр бризера надо чистить 2 раза в месяц", Task.TaskStatus.NEW);
-//        taskManager.addTask("Помыть полы", "Мыть полы надо 4 раза в месяц", Task.TaskStatus.NEW);
-//        Epic cleaning = taskManager.addEpic("Уборка", "Уборка это долго", Task.TaskStatus.NEW);
-//        Subtask sab = taskManager.addSubtask("Протереть пыль", "Протирай хорошо", Task.TaskStatus.NEW, cleaning);
-//        Subtask sab2 = taskManager.addSubtask("Помыть раковину", "Раковину надо мыть с порошком", Task.TaskStatus.NEW, cleaning);
-//        taskManager.printAllTasks();
-//        taskManager.printAllEpics();
-//        taskManager.printAllSubtasks(3);
-//        taskManager.updateSubtaskStatus(4, Task.TaskStatus.IN_PROGRESS);
-//        taskManager.updateSubtaskStatus(5, Task.TaskStatus.IN_PROGRESS);
-//        taskManager.printEpicById(3);
-//        taskManager.printAllSubtasks(3);
+        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        Task newTask = inMemoryTaskManager.addTask("Почистить фильтр", "Фильтр бризера надо чистить 2 раза в месяц", TaskStatus.NEW);
+        inMemoryTaskManager.getTaskById(newTask.getId());
+        inMemoryTaskManager.addTask("Помыть полы", "Мыть полы надо 4 раза в месяц", TaskStatus.NEW);
+        Epic cleaning = inMemoryTaskManager.addEpic("Уборка", "Уборка это долго", TaskStatus.NEW);
+        inMemoryTaskManager.addSubtask("Протереть пыль", "Протирай хорошо", TaskStatus.NEW, cleaning);
+        inMemoryTaskManager.addSubtask("Помыть раковину", "Раковину надо мыть с порошком", TaskStatus.NEW, cleaning);
+        inMemoryTaskManager.getAllTasks();
+        inMemoryTaskManager.getAllEpics();
+        inMemoryTaskManager.getAllSubtasks(3);
+        inMemoryTaskManager.updateSubtaskStatus(4, TaskStatus.IN_PROGRESS);
+        inMemoryTaskManager.updateSubtaskStatus(5, TaskStatus.IN_PROGRESS);
+        inMemoryTaskManager.getEpicById(3);
+        inMemoryTaskManager.getAllSubtasks(3);
+        List<Object> history = inMemoryTaskManager.historyManager.getHistory();
+        for (Object o : history) {
+            System.out.println(o);
+        }
     }
 }

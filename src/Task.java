@@ -28,7 +28,7 @@ public class Task {
     }
 
     @Override
-    public final boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Task otherTask = (Task) obj;
@@ -36,7 +36,7 @@ public class Task {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return Objects.hash(id);
     }
 
@@ -45,5 +45,9 @@ public class Task {
         this.descriptionOfTask = descriptionOfTask;
         this.id = id;
         this.status = status;
+    }
+
+    public Task copy() {
+        return new Task(nameOfTask, descriptionOfTask, id, status);
     }
 }

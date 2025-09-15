@@ -17,4 +17,9 @@ public class Subtask extends Task {
             this.epic.updateEpicStatus();
         }
     }
+
+    @Override
+    public Subtask copy() {
+        return new Subtask(getNameOfTask(), getDescriptionOfTask(), getId(), getStatus(), epic);
+    }
 }
