@@ -1,12 +1,16 @@
+package com.yandex.app.service;
+
+import com.yandex.app.model.Task;
+
 import java.util.List;
 import java.util.ArrayList;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private List<Object> history = new ArrayList<>();
+    private List<Task> history = new ArrayList<>();
 
     @Override
-    public <T extends Task> void add(T task) {
+    public void add(Task task) {
         history.add(task.copy());
         if (history.size() > 10) {
             history.remove(0);
@@ -14,7 +18,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public List<Object> getHistory() {
-        return history;
+    public List<Task> getHistory() {
+        return List.copyOf(history);
     }
 }

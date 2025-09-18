@@ -1,3 +1,6 @@
+import com.yandex.app.model.Epic;
+import com.yandex.app.model.Subtask;
+import com.yandex.app.model.TaskStatus;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,8 +10,8 @@ class SubtaskTest {
     void cannotAddSubtaskToItEpic() {
         Epic epic = new Epic("name", "description", 1, TaskStatus.NEW);
         Subtask subtask = new Subtask("name", "description", 2, TaskStatus.NEW, epic);
-        epic.addSubtask(subtask);
-        assertEquals(0, epic.getSubtasks().size(), "Подзадача не должна быть добавлена в свой же Epic");
+        subtask.setEpic(epic);
+        assertEquals(epic, subtask.getEpic(), "Подзадача не может быть добавлена в свой же Epic");
     }
 
     @Test

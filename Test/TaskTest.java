@@ -1,3 +1,6 @@
+import com.yandex.app.model.Task;
+import com.yandex.app.model.TaskStatus;
+import com.yandex.app.service.InMemoryTaskManager;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

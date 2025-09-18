@@ -1,3 +1,7 @@
+package com.yandex.app.model;
+
+import com.yandex.app.service.InMemoryTaskManager;
+
 public class Subtask extends Task {
     private Epic epic;
 
@@ -10,11 +14,18 @@ public class Subtask extends Task {
         return epic;
     }
 
+    public void setEpic(Epic epic) {
+        if (epic != this.epic) {
+            this.epic = epic;
+        }
+    }
+
     @Override
     public void setStatus(TaskStatus newStatus) {
         super.setStatus(newStatus);
         if (this.epic != null) {
-            this.epic.updateEpicStatus();
+            InMemoryTaskManager manager = new InMemoryTaskManager();
+            manager.updateEpicStatus(this.epic);
         }
     }
 

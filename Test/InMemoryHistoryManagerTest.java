@@ -1,3 +1,6 @@
+import com.yandex.app.model.Task;
+import com.yandex.app.model.TaskStatus;
+import com.yandex.app.service.InMemoryHistoryManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +21,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void add() {
-        List<Object> history = historyManager.getHistory();
+        List<Task> history = historyManager.getHistory();
         assertNotNull(history, "После добавления задачи, история не должна быть пустой.");
         assertEquals(1, history.size(), "После добавления задачи, история не должна быть пустой.");
 
@@ -36,10 +39,15 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void saveOldTask() {
-        List<Object> history = historyManager.getHistory();
+        List<Task> history = historyManager.getHistory();
         assertNotNull(history, "После добавления задачи, история не должна быть пустой.");
         Task task2 = new Task("name2", "description2", 1, TaskStatus.NEW);
         historyManager.add(task2);
         assertEquals(2, history.size(), "При добавлении следующей задачи, старая остаётся");
     }
+
+   @Test
+   void checkHistory() {
+
+   }
 }

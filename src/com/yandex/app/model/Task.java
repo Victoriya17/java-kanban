@@ -1,3 +1,5 @@
+package com.yandex.app.model;
+
 import java.util.Objects;
 
 public class Task {
@@ -7,6 +9,11 @@ public class Task {
     private TaskStatus status;
 
     public String getNameOfTask() {
+        return nameOfTask;
+    }
+
+    public String setNameOfTask (String nameOfTask){
+        this.nameOfTask = nameOfTask;
         return nameOfTask;
     }
 

@@ -1,3 +1,11 @@
+package com.yandex.app;
+
+import com.yandex.app.model.Epic;
+import com.yandex.app.model.Subtask;
+import com.yandex.app.model.Task;
+import com.yandex.app.model.TaskStatus;
+import com.yandex.app.service.InMemoryTaskManager;
+
 import java.util.List;
 
 public class Main {
@@ -17,9 +25,9 @@ public class Main {
         inMemoryTaskManager.updateSubtaskStatus(5, TaskStatus.IN_PROGRESS);
         inMemoryTaskManager.getEpicById(3);
         inMemoryTaskManager.getAllSubtasks(3);
-        List<Object> history = inMemoryTaskManager.historyManager.getHistory();
-        for (Object o : history) {
-            System.out.println(o);
+        List<Task> history = inMemoryTaskManager.historyManager.getHistory();
+        for (Object histories : history) {
+            System.out.println(histories);
         }
     }
 }

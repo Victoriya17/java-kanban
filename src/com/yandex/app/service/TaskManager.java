@@ -1,3 +1,10 @@
+package com.yandex.app.service;
+
+import com.yandex.app.model.Epic;
+import com.yandex.app.model.Subtask;
+import com.yandex.app.model.Task;
+import com.yandex.app.model.TaskStatus;
+
 import java.util.List;
 
 public interface TaskManager {
@@ -23,7 +30,7 @@ public interface TaskManager {
 
     void deleteSubtaskById(Integer id);
 
-    void deleteEpicById(int epicId, Epic epic);
+    void deleteEpicById(int epicId);
 
     Task getTaskById(Integer id);
 
@@ -36,6 +43,8 @@ public interface TaskManager {
     void updateSubtask(Subtask subtask);
 
     void updateEpic(Epic epic);
+
+    void updateEpicStatus(Epic epic);
 
     void updateSubtaskStatus(int subtaskId, TaskStatus newStatus);
 }

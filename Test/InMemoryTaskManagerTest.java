@@ -1,3 +1,8 @@
+import com.yandex.app.model.Epic;
+import com.yandex.app.model.Subtask;
+import com.yandex.app.model.Task;
+import com.yandex.app.model.TaskStatus;
+import com.yandex.app.service.InMemoryTaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -143,5 +148,21 @@ class InMemoryTaskManagerTest {
         assertNotEquals(task.getId(), epic.getId());
         assertNotEquals(subtask.getId(), subtask2.getId());
         assertNotEquals(epic.getId(), epic2.getId());
+    }
+
+    @Test
+    void checkImmutability() {
+        task.setNameOfTask("name");
+        assertEquals("Test addNewTask", savedTask.getNameOfTask());
+        assertEquals("name", task.getNameOfTask());
+    }
+
+    @Test
+    void testGetHistory() {
+        List<Task> history = taskManager.historyManager.getHistory();
+        assertEquals(3, history.size());
+        assertEquals(savedTask, history.get(0));
+        assertEquals(savedEpic, history.get(1));
+        assertEquals(savedSubtask, history.get(2));
     }
 }

@@ -1,3 +1,6 @@
+import com.yandex.app.model.Epic;
+import com.yandex.app.model.Subtask;
+import com.yandex.app.model.TaskStatus;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +19,7 @@ class EpicTest {
         Epic epic = new Epic("name", "description", 1, TaskStatus.NEW);
         int size = epic.getSubtasks().size();
 
-        epic.addSubtask(new Subtask("name", "description", 2, TaskStatus.NEW, epic));
+        epic.addSubtaskId(epic.getId());
 
         assertEquals(size, epic.getSubtasks().size(), "Размер списка подзадач не изменился при " +
                 "попытке добавления Эпика в себя, в виде подзадачи");
