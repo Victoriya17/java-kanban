@@ -47,8 +47,8 @@ class InMemoryHistoryManagerTest {
         Task task2 = new Task("name2", "description2", 1, TaskStatus.NEW);
         historyManager.add(task2);
 
-        assertEquals(1, historyManager.getHistory().size(), "При добавлении следующей задачи " +
-                "с тем же ID, размер истории не изменяется");
+        assertEquals(1, historyManager.getHistory().size(), "При добавлении следующей задачи с тем" +
+                "же ID, размер истории не изменяется");
     }
 
     @Test
