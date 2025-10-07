@@ -32,4 +32,10 @@ public class Epic extends Task {
     public Epic copy() {
         return new Epic(getNameOfTask(), getDescriptionOfTask(), getId(), getStatus());
     }
+
+    @Override
+    public String toString() {
+        return "Epic [id=" + getId() + ", name=" + getNameOfTask() + ", description=" + getDescriptionOfTask() + ", " +
+                "status=" + getStatus() + "]";
+    }
 }

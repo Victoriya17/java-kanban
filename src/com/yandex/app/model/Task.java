@@ -12,7 +12,7 @@ public class Task {
         return nameOfTask;
     }
 
-    public String setNameOfTask (String nameOfTask){
+    public String setNameOfTask(String nameOfTask) {
         this.nameOfTask = nameOfTask;
         return nameOfTask;
     }
@@ -56,5 +56,11 @@ public class Task {
 
     public Task copy() {
         return new Task(nameOfTask, descriptionOfTask, id, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Task [id=" + id + ", name=" + nameOfTask + ", description=" + descriptionOfTask + ", status=" +
+                status + "]";
     }
 }
