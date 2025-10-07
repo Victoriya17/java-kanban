@@ -24,7 +24,9 @@ public class Main {
         inMemoryTaskManager.updateSubtaskStatus(4, TaskStatus.IN_PROGRESS);
         inMemoryTaskManager.updateSubtaskStatus(5, TaskStatus.IN_PROGRESS);
         inMemoryTaskManager.getEpicById(3);
+        inMemoryTaskManager.getSubtaskById(4);
         inMemoryTaskManager.getAllSubtasks(3);
+        inMemoryTaskManager.getEpicById(3);
         List<Task> history = inMemoryTaskManager.historyManager.getHistory();
         for (Object histories : history) {
             System.out.println(histories);
