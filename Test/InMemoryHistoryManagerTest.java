@@ -7,8 +7,6 @@ import com.yandex.app.service.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
@@ -44,7 +42,8 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void saveNewTask() {
-        assertNotNull(1, "После добавления задачи, история не должна быть пустой.");
+        assertEquals(1, historyManager.getHistory().size(), "После добавления задачи, история не " +
+                "должна быть пустой.");
         Task task2 = new Task("name2", "description2", 1, TaskStatus.NEW);
         historyManager.add(task2);
 
