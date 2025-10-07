@@ -33,4 +33,10 @@ public class Subtask extends Task {
     public Subtask copy() {
         return new Subtask(getNameOfTask(), getDescriptionOfTask(), getId(), getStatus(), epic);
     }
+
+    @Override
+    public String toString() {
+        return "Subtask [id=" + getId() + ", name=" + getNameOfTask() + ", description=" + getDescriptionOfTask() +
+                ", status=" + getStatus() + ", epic=" + epic + "]";
+    }
 }
