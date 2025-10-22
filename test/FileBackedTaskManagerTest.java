@@ -150,8 +150,9 @@ class FileBackedTaskManagerTest {
                 TaskStatus.IN_PROGRESS, "description2"));
         Epic epic2 = fileBackedTaskManager.addEpic(new Epic(5, TypeOfTasks.EPIC, "name2", TaskStatus.NEW,
                 "description2"));
+        epicId = epic2.getId();
         Subtask subtask2 = fileBackedTaskManager.addSubtask(new Subtask(6, TypeOfTasks.SUBTASK, "subtask",
-                TaskStatus.NEW, "description2", 5));
+                TaskStatus.NEW, "description2", epicId));
         assertNotEquals(task.getId(), task2.getId());
         assertNotEquals(task.getId(), subtask.getId());
         assertNotEquals(task.getId(), epic.getId());
