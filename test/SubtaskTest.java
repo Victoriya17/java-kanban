@@ -9,16 +9,19 @@ class SubtaskTest {
     @Test
     void cannotAddSubtaskToItEpic() {
         Epic epic = new Epic("name", "description", 1, TaskStatus.NEW);
-        Subtask subtask = new Subtask("name", "description", 2, TaskStatus.NEW, epic);
-        subtask.setEpic(epic);
-        assertEquals(epic, subtask.getEpic(), "Подзадача не может быть добавлена в свой же Epic");
+        Subtask subtask = new Subtask("name", "description", 2, TaskStatus.NEW,
+                epic.getId());
+        subtask.setEpicId(epic.getId());
+        assertEquals(epic.getId(), subtask.getEpicId(), "Подзадача не может быть добавлена в свой же Epic");
     }
 
     @Test
     void SubtaskEqualitySubtask() {
         Epic epic = new Epic("name", "description", 1, TaskStatus.NEW);
-        Subtask subtask1 = new Subtask("name", "description", 2, TaskStatus.NEW, epic);
-        Subtask subtask2 = new Subtask("name", "description", 2, TaskStatus.NEW, epic);
+        Subtask subtask1 = new Subtask("name", "description", 2, TaskStatus.NEW,
+                epic.getId());
+        Subtask subtask2 = new Subtask("name", "description", 2, TaskStatus.NEW,
+                epic.getId());
 
         assertEquals(subtask1, subtask2, "Subtask с одинаковыми ID должны быть равны.");
     }

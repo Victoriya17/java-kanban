@@ -7,14 +7,14 @@ public class Task {
     private String descriptionOfTask;
     private int id;
     private TaskStatus status;
+    private TypeOfTasks taskType = TypeOfTasks.TASK;
 
     public String getNameOfTask() {
         return nameOfTask;
     }
 
-    public String setNameOfTask(String nameOfTask) {
+    public void setNameOfTask(String nameOfTask) {
         this.nameOfTask = nameOfTask;
-        return nameOfTask;
     }
 
     public String getDescriptionOfTask() {
@@ -54,13 +54,29 @@ public class Task {
         this.status = status;
     }
 
+    public Task(int id, TypeOfTasks taskType, String nameOfTask, TaskStatus status, String descriptionOfTask) {
+        this.id = id;
+        this.taskType = taskType;
+        this.nameOfTask = nameOfTask;
+        this.status = status;
+        this.descriptionOfTask = descriptionOfTask;
+    }
+
     public Task copy() {
-        return new Task(nameOfTask, descriptionOfTask, id, status);
+        return new Task(getNameOfTask(), getDescriptionOfTask(), getId(), getStatus());
     }
 
     @Override
     public String toString() {
         return "Task [id=" + id + ", name=" + nameOfTask + ", description=" + descriptionOfTask + ", status=" +
                 status + "]";
+    }
+
+    public TypeOfTasks getType() {
+        return TypeOfTasks.TASK;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
