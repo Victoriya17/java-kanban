@@ -109,12 +109,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                     manager.epics.put(epic.getId(), epic);
                     break;
                 case SUBTASK:
-                    Subtask subtask = (Subtask) task;
-                    manager.subtasks.put(subtask.getId(), subtask);
-                    break;
-                default:
-                    throw new IllegalStateException("Неправильный тип задачи: " + task.getType());
             }
+        }
+
+            for (int i = 1; i < lines.length; i++) {
+                Task task = fromString(lines[i]);
+                if (task.getType() == TypeOfTasks.SUBTASK) {
+                    Subtask subtask = (Subtask) task;
+                    Epic epic = manager.epics.get(subtask.getEpicId());
+                    if (epic != null) {
+                        subtask.setEpicId(epic.getId());
+                        manager.subtasks.put(subtask.getId(), subtask);
+                    } else {
+                        throw new IllegalStateException("Эпик для подзадачи не найден: " + subtask.getId());
+                    }
+                }
         }
         return manager;
     }

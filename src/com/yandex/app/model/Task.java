@@ -7,7 +7,7 @@ public class Task {
     private String descriptionOfTask;
     private int id;
     private TaskStatus status;
-    private TypeOfTasks taskType = TypeOfTasks.TASK;
+    protected TypeOfTasks taskType = TypeOfTasks.TASK;
 
     public String getNameOfTask() {
         return nameOfTask;
