@@ -17,10 +17,12 @@ class TaskTest {
     }
 
     @Test
-    public void testTaskImmutability() {
+    void testTaskImmutability() {
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
         task1 = new Task("name", "description", 1, TaskStatus.NEW);
-        Task addedTask = taskManager.addTask(task1.getNameOfTask(), task1.getDescriptionOfTask(), task1.getStatus());
+        Task addedTask = new Task(task1.getNameOfTask(), task1.getDescriptionOfTask(), task1.getId(),
+                task1.getStatus());
+        taskManager.addTask(addedTask);
 
         assertEquals(task1.getNameOfTask(), addedTask.getNameOfTask());
         assertEquals(task1.getDescriptionOfTask(), addedTask.getDescriptionOfTask());
