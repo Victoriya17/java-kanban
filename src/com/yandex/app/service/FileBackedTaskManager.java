@@ -14,7 +14,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         this.file = file;
     }
 
-    public void save() {
+    private void save() {
         try {
             StringBuilder content = new StringBuilder();
             String header = "id,type,name,status,description,epic";
@@ -26,11 +26,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
             for (Epic epic : epics.values()) {
                 content.append(toStringEpic(epic)).append("\n");
+            }
 
-                for (Subtask subtask : subtasks.values()) {
-                    if (subtask.getEpicId() == epic.getId()) {
-                        content.append(toStringSubtask(subtask)).append("\n");
-                    }
+            for (Subtask subtask : subtasks.values()) {
+                Epic epic = epics.get(subtask.getEpicId());
+                if (epic != null) {
+                    content.append(toStringSubtask(subtask)).append("\n");
+                } else {
+                    throw new IllegalStateException("Эпик для подзадачи не найден: " + subtask.getId());
                 }
             }
 
@@ -109,21 +112,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                     manager.epics.put(epic.getId(), epic);
                     break;
                 case SUBTASK:
-            }
-        }
-
-            for (int i = 1; i < lines.length; i++) {
-                Task task = fromString(lines[i]);
-                if (task.getType() == TypeOfTasks.SUBTASK) {
                     Subtask subtask = (Subtask) task;
-                    Epic epic = manager.epics.get(subtask.getEpicId());
-                    if (epic != null) {
-                        subtask.setEpicId(epic.getId());
+                    Epic epic1 = manager.epics.get(subtask.getEpicId());
+                    if (epic1 != null) {
+                        subtask.setEpicId(epic1.getId());
                         manager.subtasks.put(subtask.getId(), subtask);
+                        epic1.addSubtaskId(subtask.getId());
                     } else {
                         throw new IllegalStateException("Эпик для подзадачи не найден: " + subtask.getId());
                     }
-                }
+                    break;
+                default:
+                    throw new IllegalStateException("Неправильный тип задачи: " + task.getType());
+            }
         }
         return manager;
     }
