@@ -16,7 +16,8 @@ class InMemoryHistoryManagerTest {
     @BeforeEach
     void beforeEach() {
         historyManager = new InMemoryHistoryManager();
-        task = new Task("name", "description", 1, TaskStatus.NEW);
+        task = new Task("name", "description", TaskStatus.NEW);
+        task.setId(1);
         historyManager.add(task);
     }
 
@@ -44,7 +45,8 @@ class InMemoryHistoryManagerTest {
     void saveNewTask() {
         assertEquals(1, historyManager.getHistory().size(), "После добавления задачи, история не " +
                 "должна быть пустой.");
-        Task task2 = new Task("name2", "description2", 1, TaskStatus.NEW);
+        Task task2 = new Task("name2", "description2", TaskStatus.NEW);
+        task2.setId(1);
         historyManager.add(task2);
 
         assertEquals(1, historyManager.getHistory().size(), "При добавлении следующей задачи " +
@@ -63,16 +65,16 @@ class InMemoryHistoryManagerTest {
         assertTrue(historyManager.getHistory().contains(task));
         historyManager.remove(task.getId());
         assertFalse(historyManager.getHistory().contains(task));
-        Task newTask = new Task("newName", "newDescription", 1, TaskStatus.NEW);
+        Task newTask = new Task("newName", "newDescription", TaskStatus.NEW);
         historyManager.add(newTask);
         assertTrue(historyManager.getHistory().contains(newTask));
     }
 
     @Test
     void removedSubtaskDoNotKeepOldIds() {
-        Epic epic = new Epic("nameEpic", "descriptionEpic", 2, TaskStatus.NEW);
+        Epic epic = new Epic("nameEpic", "descriptionEpic", TaskStatus.NEW);
         historyManager.add(epic);
-        Subtask subtask = new Subtask("name", "description", 3, TaskStatus.NEW,
+        Subtask subtask = new Subtask("name", "description", TaskStatus.NEW,
                 epic.getId());
         historyManager.add(subtask);
         assertTrue(historyManager.getHistory().contains(subtask));
@@ -80,7 +82,7 @@ class InMemoryHistoryManagerTest {
         historyManager.remove(subtask.getId());
         assertFalse(historyManager.getHistory().contains(subtask), "Подзадача должна быть удалена из эпика");
 
-        Subtask newSubtask = new Subtask("newName", "newDescription", 3, TaskStatus.NEW,
+        Subtask newSubtask = new Subtask("newName", "newDescription", TaskStatus.NEW,
                 epic.getId());
         historyManager.add(newSubtask);
         assertTrue(historyManager.getHistory().contains(newSubtask));
@@ -88,9 +90,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void changeFieldsBySetters() {
-        Epic epic = new Epic("nameEpic", "descriptionEpic", 2, TaskStatus.NEW);
+        Epic epic = new Epic("nameEpic", "descriptionEpic", TaskStatus.NEW);
         historyManager.add(epic);
-        Subtask subtask = new Subtask("name", "description", 3, TaskStatus.NEW,
+        Subtask subtask = new Subtask("name", "description", TaskStatus.NEW,
                 epic.getId());
         historyManager.add(subtask);
 

@@ -1,5 +1,8 @@
 package com.yandex.app.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -7,7 +10,8 @@ public class Task {
     private String descriptionOfTask;
     private int id;
     private TaskStatus status;
-    protected TypeOfTasks taskType;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
     public String getNameOfTask() {
         return nameOfTask;
@@ -21,9 +25,12 @@ public class Task {
         return descriptionOfTask;
     }
 
-
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public TaskStatus getStatus() {
@@ -32,6 +39,22 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
     @Override
@@ -47,23 +70,27 @@ public class Task {
         return Objects.hash(id);
     }
 
-    public Task(String nameOfTask, String descriptionOfTask, int id, TaskStatus status) {
+    public Task(String nameOfTask, String descriptionOfTask, TaskStatus status) {
         this.nameOfTask = nameOfTask;
         this.descriptionOfTask = descriptionOfTask;
-        this.id = id;
         this.status = status;
     }
 
-    public Task(int id, TypeOfTasks taskType, String nameOfTask, TaskStatus status, String descriptionOfTask) {
-        this.id = id;
-        this.taskType = taskType;
+    public Task(String nameOfTask, TaskStatus status, String descriptionOfTask,
+                long duration, LocalDateTime startTime) {
         this.nameOfTask = nameOfTask;
         this.status = status;
         this.descriptionOfTask = descriptionOfTask;
+        this.duration = Duration.ofMinutes(duration);
+        this.startTime = startTime;
     }
 
     public Task copy() {
-        return new Task(getNameOfTask(), getDescriptionOfTask(), getId(), getStatus());
+        Task copy = new Task(nameOfTask, descriptionOfTask, status);
+        copy.id = this.id;
+        copy.duration = this.duration;
+        copy.startTime = this.startTime;
+        return copy;
     }
 
     @Override
@@ -76,7 +103,18 @@ public class Task {
         return TypeOfTasks.TASK;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public long getDurationToMinutes() {
+        if (duration == null) {
+            return 0L;
+        }
+        return duration.toMinutes();
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime == null) {
+            return null;
+        }
+
+        return startTime.plusMinutes(getDurationToMinutes());
     }
 }

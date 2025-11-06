@@ -47,4 +47,6 @@ public interface TaskManager {
     void updateEpicStatus(int epicId);
 
     void updateSubtaskStatus(int subtaskId, TaskStatus newStatus);
+
+    List<Task> getPrioritizedTasks();
 }
