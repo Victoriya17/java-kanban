@@ -1,13 +1,11 @@
-import com.yandex.app.model.Epic;
-import com.yandex.app.model.Subtask;
-import com.yandex.app.model.Task;
-import com.yandex.app.model.TaskStatus;
+import com.yandex.app.model.*;
 import com.yandex.app.service.InMemoryTaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static com.yandex.app.service.InMemoryTaskManager.getNextId;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -23,16 +21,19 @@ class InMemoryTaskManagerTest {
     private Epic savedEpic;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         taskManager = new InMemoryTaskManager();
-        task = taskManager.addTask("Test addNewTask", "description", TaskStatus.NEW);
+        task = taskManager.addTask(new Task("Задача", "Описание задачи", 1,
+                TaskStatus.NEW));
         assertNotNull(task, "Задача не была создана.");
         taskId = task.getId();
         savedTask = taskManager.getTaskById(taskId);
-        epic = taskManager.addEpic("name", "description", TaskStatus.NEW);
+        epic = taskManager.addEpic(new Epic("name", "description", 2,
+                TaskStatus.NEW));
         epicId = epic.getId();
         savedEpic = taskManager.getEpicById(epicId);
-        subtask = taskManager.addSubtask("subtask", "description", TaskStatus.NEW, epic);
+        subtask = taskManager.addSubtask(new Subtask("subtask", "description", 3,
+                TaskStatus.NEW, epicId));
         subtaskId = subtask.getId();
         savedSubtask = taskManager.getSubtaskById(subtaskId);
     }
@@ -139,10 +140,12 @@ class InMemoryTaskManagerTest {
 
     @Test
     void idUnique() {
-        Task task2 = taskManager.addTask("Task2", "description2", TaskStatus.IN_PROGRESS);
-        Epic epic2 = new Epic("name2", "description2", 2, TaskStatus.NEW);
-        Subtask subtask2 = taskManager.addSubtask("subtask", "description2", TaskStatus.NEW,
-                epic2);
+        Task task2 = taskManager.addTask(new Task("Task2", "description2", getNextId(),
+                TaskStatus.IN_PROGRESS));
+        Epic epic2 = taskManager.addEpic(new Epic("name2", "description2", getNextId(),
+                TaskStatus.NEW));
+        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description2",
+                getNextId(), TaskStatus.NEW, epic2.getId()));
         assertNotEquals(task.getId(), task2.getId());
         assertNotEquals(task.getId(), subtask.getId());
         assertNotEquals(task.getId(), epic.getId());
@@ -153,7 +156,7 @@ class InMemoryTaskManagerTest {
     @Test
     void checkImmutability() {
         task.setNameOfTask("name");
-        assertEquals("Test addNewTask", savedTask.getNameOfTask());
+        assertEquals("Задача", savedTask.getNameOfTask());
         assertEquals("name", task.getNameOfTask());
     }
 

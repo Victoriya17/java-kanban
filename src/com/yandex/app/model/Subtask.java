@@ -1,42 +1,42 @@
 package com.yandex.app.model;
 
-import com.yandex.app.service.InMemoryTaskManager;
-
 public class Subtask extends Task {
-    private Epic epic;
+    private int epicId;
 
-    public Subtask(String nameOfTask, String descriptionOfTask, int id, TaskStatus status, Epic epic) {
+    public Subtask(String nameOfTask, String descriptionOfTask, int id, TaskStatus status, int epicId) {
         super(nameOfTask, descriptionOfTask, id, status);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
-    public Epic getEpic() {
-        return epic;
+    public Subtask(int id, TypeOfTasks taskType, String nameOfTask, TaskStatus status, String descriptionOfTask,
+                   int epicId) {
+        super(id, taskType, nameOfTask, status, descriptionOfTask);
+        this.epicId = epicId;
     }
 
-    public void setEpic(Epic epic) {
-        if (epic != this.epic) {
-            this.epic = epic;
-        }
+    public int getEpicId() {
+        return epicId;
     }
 
-    @Override
-    public void setStatus(TaskStatus newStatus) {
-        super.setStatus(newStatus);
-        if (this.epic != null) {
-            InMemoryTaskManager manager = new InMemoryTaskManager();
-            manager.updateEpicStatus(this.epic);
+    public void setEpicId(int epicId) {
+        if (epicId != getId()) {
+            this.epicId = epicId;
         }
     }
 
     @Override
     public Subtask copy() {
-        return new Subtask(getNameOfTask(), getDescriptionOfTask(), getId(), getStatus(), epic);
+        return new Subtask(getNameOfTask(), getDescriptionOfTask(), getId(), getStatus(), getEpicId());
     }
 
     @Override
     public String toString() {
         return "Subtask [id=" + getId() + ", name=" + getNameOfTask() + ", description=" + getDescriptionOfTask() +
-                ", status=" + getStatus() + ", epic=" + epic + "]";
+                ", status=" + getStatus() + ", epicId=" + epicId + "]";
+    }
+
+    @Override
+    public TypeOfTasks getType() {
+        return TypeOfTasks.SUBTASK;
     }
 }

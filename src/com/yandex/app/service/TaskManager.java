@@ -8,11 +8,11 @@ import com.yandex.app.model.TaskStatus;
 import java.util.List;
 
 public interface TaskManager {
-    Task addTask(String nameOfTask, String descriptionOfTask, TaskStatus taskStatus);
+    Task addTask(Task task);
 
-    Subtask addSubtask(String nameOfTask, String descriptionOfTask, TaskStatus taskStatus, Epic epic);
+    Subtask addSubtask(Subtask subtask);
 
-    Epic addEpic(String nameOfTask, String descriptionOfTask, TaskStatus status);
+    Epic addEpic(Epic epic);
 
     List<Task> getAllTasks();
 
@@ -44,7 +44,7 @@ public interface TaskManager {
 
     void updateEpic(Epic epic);
 
-    void updateEpicStatus(Epic epic);
+    void updateEpicStatus(int epicId);
 
     void updateSubtaskStatus(int subtaskId, TaskStatus newStatus);
 }
