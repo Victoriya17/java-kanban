@@ -3,7 +3,6 @@ package com.yandex.app.service;
 import com.yandex.app.model.Epic;
 import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
-import com.yandex.app.model.TaskStatus;
 
 import java.util.List;
 
@@ -43,10 +42,6 @@ public interface TaskManager {
     void updateSubtask(Subtask subtask);
 
     void updateEpic(Epic epic);
-
-    void updateEpicStatus(int epicId);
-
-    void updateSubtaskStatus(int subtaskId, TaskStatus newStatus);
 
     List<Task> getPrioritizedTasks();
 }

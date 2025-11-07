@@ -30,7 +30,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void beforeEach() {
         taskManager = createTaskManager();
         task = taskManager.addTask(new Task("Задача", TaskStatus.NEW,
-                "Описание задачи", 90, LocalDateTime.of(2025, 11, 01,
+                "Описание задачи", 90, LocalDateTime.of(2025, 11, 1,
                 9, 0)));
         assertNotNull(task, "Задача не была создана.");
         taskId = task.getId();
@@ -103,12 +103,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void idUnique() {
-        Task task2 = taskManager.addTask(new Task("Task2", "description2",
-                TaskStatus.IN_PROGRESS));
-        Epic epic2 = taskManager.addEpic(new Epic("name2", "description2",
-                TaskStatus.NEW));
-        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description2",
-                TaskStatus.NEW, epic2.getId()));
+        Task task2 = taskManager.addTask(new Task("Задача", TaskStatus.IN_PROGRESS,
+                "Описание задачи", 90, LocalDateTime.of(2025, 11, 2,
+                9, 0)));
+        Epic epic2 = taskManager.addEpic(new Epic("name", TaskStatus.NEW, "description",
+                60, LocalDateTime.of(2025, 11, 2, 14, 0)));
+        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", TaskStatus.NEW,
+                "description", 10, LocalDateTime.of(2025, 11, 2, 15,
+                10), epicId));
         assertNotEquals(task.getId(), task2.getId());
         assertNotEquals(task.getId(), subtask.getId());
         assertNotEquals(task.getId(), epic.getId());
@@ -162,18 +164,62 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void checkImmutability() {
-        task.setNameOfTask("name");
-        assertEquals("Задача", savedTask.getNameOfTask());
-        assertEquals("name", task.getNameOfTask());
+    void testUpdateTask() {
+        Task updatedTask = new Task("Новая задача", TaskStatus.DONE, "Новое описание",
+                120, LocalDateTime.of(2025, 11, 2, 10, 0));
+        updatedTask.setId(taskId);
+        taskManager.updateTask(updatedTask);
+        Task retrievedTask = taskManager.getTaskById(taskId);
+
+        assertEquals("Новая задача", retrievedTask.getNameOfTask());
+        assertEquals(TaskStatus.DONE, retrievedTask.getStatus());
+        assertEquals("Новое описание", retrievedTask.getDescriptionOfTask());
+        assertEquals(120, retrievedTask.getDuration().toMinutes());
+        assertEquals(LocalDateTime.of(2025, 11, 2, 10, 0),
+                retrievedTask.getStartTime());
     }
 
     @Test
-    void testSubtaskHasEpic() {
-        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", TaskStatus.IN_PROGRESS,
-                "description", 10, LocalDateTime.of(2025, 12, 1,
-                15, 20), epicId));
-        Epic epic2 = taskManager.getEpicById(subtask2.getEpicId());
-        assertNotNull(epic2, "Подзадача должна быть связана с эпиком.");
+    void testUpdateSubtask() {
+        Subtask updatedSubtask = new Subtask("Новая задача", TaskStatus.NEW, "Новое описание",
+                120, LocalDateTime.of(2025, 11, 2, 10, 0), epicId);
+        updatedSubtask.setId(subtaskId);
+        taskManager.updateSubtask(updatedSubtask);
+        Subtask retrievedSubtask = taskManager.getSubtaskById(subtaskId);
+
+        assertEquals("Новая задача", retrievedSubtask.getNameOfTask());
+        assertEquals(TaskStatus.NEW, retrievedSubtask.getStatus());
+        assertEquals("Новое описание", retrievedSubtask.getDescriptionOfTask());
+        assertEquals(120, retrievedSubtask.getDuration().toMinutes());
+        assertEquals(LocalDateTime.of(2025, 11, 2, 10, 0),
+                retrievedSubtask.getStartTime());
+    }
+
+    @Test
+    void testUpdateEpic() {
+        Epic updatedEpic = new Epic("Новая задача", TaskStatus.DONE, "Новое описание",
+                120, LocalDateTime.of(2025, 11, 2, 10, 0));
+        updatedEpic.setId(epicId);
+        taskManager.updateEpic(updatedEpic);
+        Epic retrievedEpic = taskManager.getEpicById(epicId);
+
+        assertEquals("Новая задача", retrievedEpic.getNameOfTask());
+        assertEquals(TaskStatus.NEW, retrievedEpic.getStatus());
+        assertEquals("Новое описание", retrievedEpic.getDescriptionOfTask());
+        assertEquals(120, retrievedEpic.getDuration().toMinutes());
+        assertEquals(LocalDateTime.of(2025, 11, 2, 10, 0),
+                retrievedEpic.getStartTime());
+    }
+
+    @Test
+    void testGetPrioritizedTasks() {
+        Task task2 = taskManager.addTask(new Task("Без времени", TaskStatus.NEW, "",
+                30, null));
+
+        List<Task> prioritized = taskManager.getPrioritizedTasks();
+
+        assertEquals(2, prioritized.size());
+        assertEquals(task, prioritized.get(0));
+        assertEquals(subtask, prioritized.get(1));
     }
 }

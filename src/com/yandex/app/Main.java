@@ -6,8 +6,6 @@ import com.yandex.app.model.Task;
 import com.yandex.app.model.TaskStatus;
 import com.yandex.app.service.InMemoryTaskManager;
 
-import java.util.List;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -26,15 +24,5 @@ public class Main {
         inMemoryTaskManager.getAllTasks();
         inMemoryTaskManager.getAllEpics();
         inMemoryTaskManager.getAllSubtasks(3);
-        inMemoryTaskManager.updateSubtaskStatus(4, TaskStatus.IN_PROGRESS);
-        inMemoryTaskManager.updateSubtaskStatus(5, TaskStatus.IN_PROGRESS);
-        inMemoryTaskManager.getEpicById(3);
-        inMemoryTaskManager.getSubtaskById(4);
-        inMemoryTaskManager.getAllSubtasks(3);
-        inMemoryTaskManager.getEpicById(3);
-        List<Task> history = inMemoryTaskManager.getHistoryManager().getHistory();
-        for (Object histories : history) {
-            System.out.println(histories);
-        }
     }
 }

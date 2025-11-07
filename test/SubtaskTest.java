@@ -57,4 +57,9 @@ class SubtaskTest {
         assertEquals(subtask.getStartTime().plusMinutes(subtask.getDurationToMinutes()), subtask.getEndTime(),
                 "Ошибка чтения времени окончания задачи");
     }
+
+    @Test
+    void testSubtaskHasEpic() {
+        assertEquals(epic.getId(), subtask.getEpicId(), "Подзадача должна быть связана с указанным эпиком");
+    }
 }

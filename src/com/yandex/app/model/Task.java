@@ -5,12 +5,27 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
-    private String nameOfTask;
-    private String descriptionOfTask;
-    private int id;
-    private TaskStatus status;
+    protected String nameOfTask;
+    protected String descriptionOfTask;
+    protected int id;
+    protected TaskStatus status;
     protected Duration duration;
     protected LocalDateTime startTime;
+
+    public Task(String nameOfTask, String descriptionOfTask, TaskStatus status) {
+        this.nameOfTask = nameOfTask;
+        this.descriptionOfTask = descriptionOfTask;
+        this.status = status;
+    }
+
+    public Task(String nameOfTask, TaskStatus status, String descriptionOfTask,
+                long duration, LocalDateTime startTime) {
+        this.nameOfTask = nameOfTask;
+        this.status = status;
+        this.descriptionOfTask = descriptionOfTask;
+        this.duration = Duration.ofMinutes(duration);
+        this.startTime = startTime;
+    }
 
     public String getNameOfTask() {
         return nameOfTask;
@@ -67,21 +82,6 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public Task(String nameOfTask, String descriptionOfTask, TaskStatus status) {
-        this.nameOfTask = nameOfTask;
-        this.descriptionOfTask = descriptionOfTask;
-        this.status = status;
-    }
-
-    public Task(String nameOfTask, TaskStatus status, String descriptionOfTask,
-                long duration, LocalDateTime startTime) {
-        this.nameOfTask = nameOfTask;
-        this.status = status;
-        this.descriptionOfTask = descriptionOfTask;
-        this.duration = Duration.ofMinutes(duration);
-        this.startTime = startTime;
     }
 
     public Task copy() {

@@ -8,9 +8,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
-    private Task savedTask;
-    private Subtask savedSubtask;
-    private Epic savedEpic;
 
     @Override
     protected InMemoryTaskManager createTaskManager() {
@@ -23,7 +20,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                 "description", 10, LocalDateTime.of(2025, 11, 2,
                 15, 20), epicId));
 
-        taskManager.updateEpicStatus(epicId);
         Epic updatedEpic = taskManager.getEpicById(epicId);
 
         assertEquals(TaskStatus.NEW, updatedEpic.getStatus());
@@ -31,12 +27,11 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @Test
     void testUpdateEpicStatusAllDone() {
-        taskManager.updateSubtaskStatus(subtask.getId(), TaskStatus.DONE);
+        subtask.setStatus(TaskStatus.DONE);
         Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", TaskStatus.DONE,
                 "description", 10, LocalDateTime.of(2025, 11, 2,
                 15, 20), epicId));
 
-        taskManager.updateEpicStatus(epicId);
         Epic updatedEpic = taskManager.getEpicById(epicId);
 
         assertEquals(TaskStatus.DONE, updatedEpic.getStatus());
@@ -48,7 +43,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                 "description", 10, LocalDateTime.of(2025, 11, 2,
                 15, 20), epicId));
 
-        taskManager.updateEpicStatus(epicId);
         Epic updatedEpic = taskManager.getEpicById(epicId);
 
         assertEquals(TaskStatus.IN_PROGRESS, updatedEpic.getStatus());
@@ -60,7 +54,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                 "description", 10, LocalDateTime.of(2025, 11, 2,
                 15, 20), epicId));
 
-        taskManager.updateEpicStatus(epicId);
         Epic updatedEpic = taskManager.getEpicById(epicId);
 
         assertEquals(TaskStatus.IN_PROGRESS, updatedEpic.getStatus());
@@ -80,7 +73,14 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Task task2 = new Task("Задача", TaskStatus.NEW, "Описание", 10,
                 LocalDateTime.of(2025, 11, 1, 9, 10));
         task2.setId(4);
-        assertTrue(taskManager.hasOverlappingTasks(task2).isPresent());
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> taskManager.addTask(task2)
+        );
+
+        assertTrue(exception.getMessage().contains("пересекается по времени"),
+                "Сообщение должно содержать 'пересекается по времени'");
     }
 
     @Test
@@ -88,7 +88,14 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Task task2 = new Task("Задача", TaskStatus.NEW, "Описание", 10,
                 LocalDateTime.of(2025, 11, 1, 8, 50));
         task2.setId(4);
-        assertTrue(taskManager.hasOverlappingTasks(task2).isPresent());
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> taskManager.addTask(task2)
+        );
+
+        assertTrue(exception.getMessage().contains("пересекается по времени"),
+                "Сообщение должно содержать 'пересекается по времени'");
     }
 
     @Test
@@ -96,6 +103,13 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Task task2 = new Task("Задача", TaskStatus.NEW, "Описание", 50,
                 LocalDateTime.of(2025, 11, 1, 8, 50));
         task2.setId(4);
-        assertTrue(taskManager.hasOverlappingTasks(task2).isPresent());
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> taskManager.addTask(task2)
+        );
+
+        assertTrue(exception.getMessage().contains("пересекается по времени"),
+                "Сообщение должно содержать 'пересекается по времени'");
     }
 }
