@@ -5,6 +5,7 @@ import com.yandex.app.model.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private final File file;
@@ -17,7 +18,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     private void save() {
         try {
             StringBuilder content = new StringBuilder();
-            String header = "id,type,name,status,description,epic";
+            String header = "id,type,name,status,description,epic,duration,start_time,end_time";
             content.append(header).append("\n");
 
             for (Task task : tasks.values()) {
@@ -45,7 +46,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     private String toStringTask(Task task) {
         return task.getId() + "," + task.getType() + "," + task.getNameOfTask() + "," + task.getDescriptionOfTask() +
-                "," + task.getStatus() + ",";
+                "," + task.getStatus() + "," + task.getDurationToMinutes() + "," + task.getStartTime() + "," +
+                task.getEndTime() + ",";
     }
 
     private String toStringEpic(Epic epic) {
@@ -63,22 +65,33 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         String nameValue = split[2];
         String descriptionValue = split[3];
         TaskStatus statusValue = TaskStatus.valueOf(split[4]);
+        long durationValue = Long.parseLong(split[5]);
+        LocalDateTime startTimeValue = LocalDateTime.parse(split[6]);
+
         int epicIdValue = 0;
 
-        if (split.length > 5) {
-            epicIdValue = Integer.parseInt(split[5]);
+        if (split.length > 8) {
+            epicIdValue = Integer.parseInt(split[8]);
         }
 
+        Task task;
         switch (type) {
             case TASK:
-                return new Task(idValue, type, nameValue, statusValue, descriptionValue);
+                task = new Task(nameValue, descriptionValue, statusValue, durationValue, startTimeValue);
+                break;
             case EPIC:
-                return new Epic(idValue, type, nameValue, statusValue, descriptionValue);
+                task = new Epic(nameValue, descriptionValue, statusValue, durationValue, startTimeValue);
+                break;
             case SUBTASK:
-                return new Subtask(idValue, type, nameValue, statusValue, descriptionValue, epicIdValue);
+                task = new Subtask(nameValue, descriptionValue, statusValue, durationValue, startTimeValue,
+                        epicIdValue);
+                break;
             default:
                 throw new IllegalArgumentException("Неправильный тип: " + type);
         }
+
+        task.setId(idValue);
+        return task;
     }
 
     public static FileBackedTaskManager loadFromFile(File file) throws IOException {
@@ -103,30 +116,35 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 maxId = task.getId();
             }
 
-            switch (task.getType()) {
-                case TASK:
-                    manager.tasks.put(task.getId(), task);
-                    break;
-                case EPIC:
-                    Epic epic = (Epic) task;
-                    manager.epics.put(epic.getId(), epic);
-                    break;
-                case SUBTASK:
-                    Subtask subtask = (Subtask) task;
-                    Epic epic1 = manager.epics.get(subtask.getEpicId());
-                    if (epic1 != null) {
-                        subtask.setEpicId(epic1.getId());
-                        manager.subtasks.put(subtask.getId(), subtask);
-                        epic1.addSubtaskId(subtask.getId());
-                    } else {
-                        throw new IllegalStateException("Эпик для подзадачи не найден: " + subtask.getId());
-                    }
-                    break;
-                default:
-                    throw new IllegalStateException("Неправильный тип задачи: " + task.getType());
-            }
+            manager.prioritizedSet.add(task);
+            processTask(manager, task);
         }
         return manager;
+    }
+
+    private static void processTask(FileBackedTaskManager manager, Task task) {
+        switch (task.getType()) {
+            case TASK:
+                manager.tasks.put(task.getId(), task);
+                break;
+            case EPIC:
+                Epic epic = (Epic) task;
+                manager.epics.put(epic.getId(), epic);
+                break;
+            case SUBTASK:
+                Subtask subtask = (Subtask) task;
+                Epic epicForSubtask = manager.epics.get(subtask.getEpicId());
+                if (epicForSubtask != null) {
+                    subtask.setEpicId(epicForSubtask.getId());
+                    manager.subtasks.put(subtask.getId(), subtask);
+                    epicForSubtask.addSubtaskId(subtask.getId());
+                } else {
+                    throw new IllegalStateException("Эпик для подзадачи не найден: " + subtask.getId());
+                }
+                break;
+            default:
+                throw new IllegalStateException("Неправильный тип задачи: " + task.getType());
+        }
     }
 
     @Override

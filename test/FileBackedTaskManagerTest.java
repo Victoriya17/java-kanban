@@ -1,6 +1,6 @@
 import com.yandex.app.model.*;
 import com.yandex.app.service.FileBackedTaskManager;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -11,37 +11,37 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class FileBackedTaskManagerTest {
-    private FileBackedTaskManager fileBackedTaskManager;
-    private Task task;
-    private Subtask subtask;
-    private Epic epic;
-    private int epicId;
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     private static File file;
 
-    @BeforeEach
-    void beforeEach() throws IOException {
-        file = File.createTempFile("test", "csv");
-        fileBackedTaskManager = new FileBackedTaskManager(file);
-        task = fileBackedTaskManager.addTask(new Task(1, TypeOfTasks.TASK, "Задача", TaskStatus.NEW,
-                "Описание задачи"));
-        assertNotNull(task, "Задача не была создана.");
-        epic = fileBackedTaskManager.addEpic(new Epic(2, TypeOfTasks.EPIC, "name", TaskStatus.NEW,
-                "description"));
-        epicId = epic.getId();
-        subtask = fileBackedTaskManager.addSubtask(new Subtask(3, TypeOfTasks.SUBTASK, "subtask",
-                TaskStatus.NEW, "description", epicId));
+    static {
+        try {
+            file = File.createTempFile("test", "csv");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected FileBackedTaskManager createTaskManager() {
+        return new FileBackedTaskManager(file);
     }
 
     @Test
     void testSaveAndLoadEmptyFile() throws IOException {
-        fileBackedTaskManager.deleteAllTasks();
-        fileBackedTaskManager.deleteAllEpics();
-        fileBackedTaskManager.deleteAllSubtasks();
+        taskManager.deleteAllTasks();
+        taskManager.deleteAllEpics();
+        taskManager.deleteAllSubtasks();
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
         assertTrue(loadedManager.getAllTasks().isEmpty());
         assertTrue(loadedManager.getAllEpics().isEmpty());
-        assertTrue(loadedManager.getAllSubtasks(epic.getId()).isEmpty());
+        List<Epic> epics = loadedManager.getAllEpics();
+        if (!epics.isEmpty()) {
+            for (Epic epic : epics) {
+                assertTrue(loadedManager.getAllSubtasks(epic.getId()).isEmpty(),
+                        "Подзадачи для эпика " + epic.getId() + " должны отсутствовать");
+            }
+        }
 
         String fileContent = new String(Files.readAllBytes(file.toPath()));
         String[] lines = fileContent.split("\n");
@@ -50,17 +50,42 @@ class FileBackedTaskManagerTest {
 
     @Test
     void testSaveAndLoadMultipleTasks() throws IOException {
+
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
 
-        assertEquals(fileBackedTaskManager.getAllTasks(), loadedManager.getAllTasks());
-        assertEquals(fileBackedTaskManager.getAllSubtasks(2), loadedManager.getAllSubtasks(2));
-        assertEquals(fileBackedTaskManager.getAllEpics(), loadedManager.getAllEpics());
+        assertEquals(taskManager.getAllTasks(), loadedManager.getAllTasks());
+        assertEquals(taskManager.getAllSubtasks(2), loadedManager.getAllSubtasks(2));
+        assertEquals(taskManager.getAllEpics(), loadedManager.getAllEpics());
     }
 
     @Test
     void testLoadAllTasks() throws IOException {
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
         List<Task> allTasks = loadedManager.getAllTasks();
-        assertEquals(1, allTasks.size());
+        assertEquals(1, allTasks.size(), "Должна быть ровно одна задача");
+        assertEquals(task.getId(), allTasks.get(0).getId(), "ID задачи должен совпадать");
+        assertEquals(task.getNameOfTask(), allTasks.get(0).getNameOfTask(),
+                "Название задачи должно совпадать");
+    }
+
+    @Test
+    void testExceptionWhenFileNotFound() {
+        File nonExistentFile = new File("non-existent-file.csv");
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            FileBackedTaskManager.loadFromFile(nonExistentFile);
+        });
+        assertEquals("Файл не найден: " + nonExistentFile.getPath(), exception.getMessage());
+    }
+
+    @Test
+    void testNoExceptionWhenFileExistsAndIsEmpty() throws IOException {
+        try {
+            Files.write(file.toPath(), "".getBytes());
+            Assertions.assertDoesNotThrow(() -> {
+                FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
+            });
+        } finally {
+            file.delete();
+        }
     }
 }

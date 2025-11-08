@@ -1,17 +1,20 @@
 package com.yandex.app.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
     private List<Integer> subtasksIds = new ArrayList<>();
+    protected LocalDateTime endTime;
 
-    public Epic(String nameOfTask, String descriptionOfTask, int id, TaskStatus status) {
-        super(nameOfTask, descriptionOfTask, id, status);
+    public Epic(String nameOfTask, String descriptionOfTask, TaskStatus status) {
+        super(nameOfTask, descriptionOfTask, status);
     }
 
-    public Epic(int id, TypeOfTasks taskType, String nameOfTask, TaskStatus status, String descriptionOfTask) {
-        super(id, taskType, nameOfTask, status, descriptionOfTask);
+    public Epic(String nameOfTask, String descriptionOfTask, TaskStatus status, long duration,
+                LocalDateTime startTime) {
+        super(nameOfTask, descriptionOfTask, status, duration, startTime);
     }
 
     public void addSubtaskId(int subtaskId) {
@@ -34,7 +37,11 @@ public class Epic extends Task {
 
     @Override
     public Epic copy() {
-        return new Epic(getNameOfTask(), getDescriptionOfTask(), getId(), getStatus());
+        Epic copy = new Epic(getNameOfTask(), getDescriptionOfTask(), getStatus());
+        copy.setId(this.getId());
+        copy.duration = this.duration;
+        copy.startTime = this.startTime;
+        return copy;
     }
 
     @Override
@@ -46,5 +53,14 @@ public class Epic extends Task {
     @Override
     public TypeOfTasks getType() {
         return TypeOfTasks.EPIC;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 }
