@@ -77,14 +77,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         Task task;
         switch (type) {
             case TASK:
-                task = new Task(nameValue, statusValue, descriptionValue, durationValue, startTimeValue);
+                task = new Task(nameValue, descriptionValue, statusValue, durationValue, startTimeValue);
                 break;
             case EPIC:
-                task = new Epic(nameValue, statusValue, descriptionValue, durationValue, startTimeValue);
+                task = new Epic(nameValue, descriptionValue, statusValue, durationValue, startTimeValue);
                 break;
             case SUBTASK:
-                task = new Subtask(nameValue, statusValue, descriptionValue, durationValue,
-                        startTimeValue, epicIdValue);
+                task = new Subtask(nameValue, descriptionValue, statusValue, durationValue, startTimeValue,
+                        epicIdValue);
                 break;
             default:
                 throw new IllegalArgumentException("Неправильный тип: " + type);

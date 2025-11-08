@@ -12,19 +12,17 @@ public class Task {
     protected Duration duration;
     protected LocalDateTime startTime;
 
-    public Task(String nameOfTask, String descriptionOfTask, TaskStatus status) {
+    public Task(String nameOfTask, String descriptionOfTask, TaskStatus status, long duration,
+                LocalDateTime startTime) {
         this.nameOfTask = nameOfTask;
         this.descriptionOfTask = descriptionOfTask;
         this.status = status;
-    }
-
-    public Task(String nameOfTask, TaskStatus status, String descriptionOfTask,
-                long duration, LocalDateTime startTime) {
-        this.nameOfTask = nameOfTask;
-        this.status = status;
-        this.descriptionOfTask = descriptionOfTask;
         this.duration = Duration.ofMinutes(duration);
         this.startTime = startTime;
+    }
+
+    public Task(String nameOfTask, String descriptionOfTask, TaskStatus status) {
+        this(nameOfTask, descriptionOfTask, status, 0, null);
     }
 
     public String getNameOfTask() {

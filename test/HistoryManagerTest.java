@@ -20,13 +20,13 @@ class HistoryManagerTest {
     @BeforeEach
     void BeforeEach() {
         historyManager = new InMemoryHistoryManager();
-        task1 = new Task("Задача", TaskStatus.NEW, "Описание задачи", 90,
+        task1 = new Task("Задача", "Описание задачи", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 11, 1, 9, 0));
         task1.setId(1);
-        task2 = new Task("Задача 2", TaskStatus.IN_PROGRESS, "Описание 2", 90,
+        task2 = new Task("Задача 2", "Описание 2", TaskStatus.IN_PROGRESS, 90,
                 LocalDateTime.of(2025, 11, 2, 9, 0));
         task2.setId(2);
-        task3 = new Task("Задача 3", TaskStatus.DONE, "Описание 3", 90,
+        task3 = new Task("Задача 3", "Описание 3", TaskStatus.DONE, 90,
                 LocalDateTime.of(2025, 11, 3, 9, 0));
         task3.setId(3);
     }
@@ -141,7 +141,6 @@ class HistoryManagerTest {
         assertEquals(1, history.size());
         assertEquals(task1, history.get(0));
     }
-
 
     @Test
     void remove_fromEmptyHistory_shouldDoNothing() {

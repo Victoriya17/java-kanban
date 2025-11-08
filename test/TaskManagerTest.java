@@ -29,17 +29,16 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @BeforeEach
     void beforeEach() {
         taskManager = createTaskManager();
-        task = taskManager.addTask(new Task("Задача", TaskStatus.NEW,
-                "Описание задачи", 90, LocalDateTime.of(2025, 11, 1,
-                9, 0)));
+        task = taskManager.addTask(new Task("Задача", "Описание задачи", TaskStatus.NEW,
+                90, LocalDateTime.of(2025, 11, 1, 9, 0)));
         assertNotNull(task, "Задача не была создана.");
         taskId = task.getId();
         savedTask = taskManager.getTaskById(taskId);
-        epic = taskManager.addEpic(new Epic("name", TaskStatus.NEW, "description",
+        epic = taskManager.addEpic(new Epic("name", "description", TaskStatus.NEW,
                 60, LocalDateTime.of(2025, 11, 1, 14, 0)));
         epicId = epic.getId();
         savedEpic = taskManager.getEpicById(epicId);
-        subtask = taskManager.addSubtask(new Subtask("subtask", TaskStatus.NEW, "description",
+        subtask = taskManager.addSubtask(new Subtask("subtask", "description", TaskStatus.NEW,
                 10, LocalDateTime.of(2025, 11, 1, 15, 10), epicId));
         subtaskId = subtask.getId();
         savedSubtask = taskManager.getSubtaskById(subtaskId);
@@ -103,14 +102,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void idUnique() {
-        Task task2 = taskManager.addTask(new Task("Задача", TaskStatus.IN_PROGRESS,
-                "Описание задачи", 90, LocalDateTime.of(2025, 11, 2,
-                9, 0)));
-        Epic epic2 = taskManager.addEpic(new Epic("name", TaskStatus.NEW, "description",
+        Task task2 = taskManager.addTask(new Task("Задача", "Описание задачи",
+                TaskStatus.IN_PROGRESS, 90, LocalDateTime.of(2025, 11, 2, 9,
+                0)));
+        Epic epic2 = taskManager.addEpic(new Epic("name", "description", TaskStatus.NEW,
                 60, LocalDateTime.of(2025, 11, 2, 14, 0)));
-        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", TaskStatus.NEW,
-                "description", 10, LocalDateTime.of(2025, 11, 2, 15,
-                10), epicId));
+        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
+                TaskStatus.NEW, 10, LocalDateTime.of(2025, 11, 2, 15, 10),
+                epicId));
         assertNotEquals(task.getId(), task2.getId());
         assertNotEquals(task.getId(), subtask.getId());
         assertNotEquals(task.getId(), epic.getId());
@@ -165,7 +164,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void testUpdateTask() {
-        Task updatedTask = new Task("Новая задача", TaskStatus.DONE, "Новое описание",
+        Task updatedTask = new Task("Новая задача", "Новое описание", TaskStatus.DONE,
                 120, LocalDateTime.of(2025, 11, 2, 10, 0));
         updatedTask.setId(taskId);
         taskManager.updateTask(updatedTask);
@@ -181,7 +180,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void testUpdateSubtask() {
-        Subtask updatedSubtask = new Subtask("Новая задача", TaskStatus.NEW, "Новое описание",
+        Subtask updatedSubtask = new Subtask("Новая задача", "Новое описание", TaskStatus.NEW,
                 120, LocalDateTime.of(2025, 11, 2, 10, 0), epicId);
         updatedSubtask.setId(subtaskId);
         taskManager.updateSubtask(updatedSubtask);
@@ -197,7 +196,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void testUpdateEpic() {
-        Epic updatedEpic = new Epic("Новая задача", TaskStatus.DONE, "Новое описание",
+        Epic updatedEpic = new Epic("Новая задача", "Новое описание", TaskStatus.DONE,
                 120, LocalDateTime.of(2025, 11, 2, 10, 0));
         updatedEpic.setId(epicId);
         taskManager.updateEpic(updatedEpic);
@@ -213,7 +212,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void testGetPrioritizedTasks() {
-        Task task2 = taskManager.addTask(new Task("Без времени", TaskStatus.NEW, "",
+        Task task2 = taskManager.addTask(new Task("Без времени", "", TaskStatus.NEW,
                 30, null));
 
         List<Task> prioritized = taskManager.getPrioritizedTasks();

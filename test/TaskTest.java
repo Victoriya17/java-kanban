@@ -14,14 +14,14 @@ class TaskTest {
 
     @BeforeEach
     void beforeEach() {
-        task1 = new Task("Задача", TaskStatus.NEW, "Описание задачи", 90,
+        task1 = new Task("Задача", "Описание задачи", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 11, 1, 9, 0));
         task1.setId(1);
     }
 
     @Test
     void TaskEqualityTask() {
-        Task task2 = new Task("Задача", TaskStatus.NEW, "Описание задачи", 90,
+        Task task2 = new Task("Задача", "Описание задачи", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         task2.setId(1);
         assertEquals(task1, task2, "Задачи с одинаковыми ID должны быть равны.");
@@ -30,13 +30,13 @@ class TaskTest {
     @Test
     void testTaskImmutability() {
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
-        Task addedTask = new Task(task1.getNameOfTask(), task1.getStatus(), task1.getDescriptionOfTask(),
+        Task addedTask = new Task(task1.getNameOfTask(), task1.getDescriptionOfTask(), task1.getStatus(),
                 task1.getDurationToMinutes(), task1.getStartTime());
         taskManager.addTask(addedTask);
 
         assertEquals(task1.getNameOfTask(), addedTask.getNameOfTask());
-        assertEquals(task1.getStatus(), addedTask.getStatus());
         assertEquals(task1.getDescriptionOfTask(), addedTask.getDescriptionOfTask());
+        assertEquals(task1.getStatus(), addedTask.getStatus());
         assertEquals(task1.getDurationToMinutes(), addedTask.getDurationToMinutes());
         assertEquals(task1.getStartTime(), addedTask.getStartTime());
     }

@@ -15,10 +15,10 @@ class SubtaskTest {
 
     @BeforeEach
     void beforeEach() {
-        epic = new Epic("Задача", TaskStatus.NEW, "Описание задачи", 90,
+        epic = new Epic("Задача", "Описание задачи", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 11, 1, 9, 0));
         epic.setId(1);
-        subtask = new Subtask("Задача", TaskStatus.NEW, "Описание задачи", 90,
+        subtask = new Subtask("Задача", "Описание задачи", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 11, 1, 9, 0), epic.getId());
         subtask.setId(2);
 
@@ -32,7 +32,7 @@ class SubtaskTest {
 
     @Test
     void SubtaskEqualitySubtask() {
-        Subtask subtask2 = new Subtask("Задача", TaskStatus.NEW, "Описание задачи",
+        Subtask subtask2 = new Subtask("Задача", "Описание задачи", TaskStatus.NEW,
                 90, LocalDateTime.of(2025, 11, 1, 9, 0), epic.getId());
         subtask2.setId(subtask.getId());
         assertEquals(subtask, subtask2, "Subtask с одинаковыми ID должны быть равны.");

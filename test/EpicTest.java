@@ -13,14 +13,14 @@ class EpicTest {
 
     @BeforeEach
     void beforeEach() {
-        epic1 = new Epic("Задача", TaskStatus.NEW, "Описание задачи", 90,
+        epic1 = new Epic("Задача", "Описание задачи", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 11, 1, 9, 0));
         epic1.setId(1);
     }
 
     @Test
     void EpicEqualityEpic() {
-        Epic epic2 = new Epic("Задача", TaskStatus.NEW, "Описание задачи", 90,
+        Epic epic2 = new Epic("Задача", "Описание задачи", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 12, 1, 9, 0));
         epic2.setId(1);
 
@@ -52,7 +52,6 @@ class EpicTest {
 
     @Test
     void checkEndTime() {
-        assertEquals(epic1.getStartTime().plusMinutes(epic1.getDurationToMinutes()), epic1.getEndTime(),
-                "Ошибка чтения времени окончания задачи");
+        assertNull(epic1.getEndTime(), "Ошибка чтения времени окончания задачи");
     }
 }

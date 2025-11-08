@@ -12,8 +12,9 @@ public class Epic extends Task {
         super(nameOfTask, descriptionOfTask, status);
     }
 
-    public Epic(String nameOfTask, TaskStatus status, String descriptionOfTask, long duration, LocalDateTime startTime) {
-        super(nameOfTask, status, descriptionOfTask, duration, startTime);
+    public Epic(String nameOfTask, String descriptionOfTask, TaskStatus status, long duration,
+                LocalDateTime startTime) {
+        super(nameOfTask, descriptionOfTask, status, duration, startTime);
     }
 
     public void addSubtaskId(int subtaskId) {
@@ -56,10 +57,7 @@ public class Epic extends Task {
 
     @Override
     public LocalDateTime getEndTime() {
-        if (startTime == null || duration == null) {
-            return null;
-        }
-        return startTime.plus(duration);
+        return endTime;
     }
 
     public void setEndTime(LocalDateTime endTime) {

@@ -16,9 +16,9 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @Test
     void testUpdateEpicStatusAllNew() {
-        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", TaskStatus.NEW,
-                "description", 10, LocalDateTime.of(2025, 11, 2,
-                15, 20), epicId));
+        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
+                TaskStatus.NEW, 10, LocalDateTime.of(2025, 11, 2, 15, 20),
+                epicId));
 
         Epic updatedEpic = taskManager.getEpicById(epicId);
 
@@ -28,9 +28,9 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @Test
     void testUpdateEpicStatusAllDone() {
         subtask.setStatus(TaskStatus.DONE);
-        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", TaskStatus.DONE,
-                "description", 10, LocalDateTime.of(2025, 11, 2,
-                15, 20), epicId));
+        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
+                TaskStatus.DONE, 10, LocalDateTime.of(2025, 11, 2, 15, 20),
+                epicId));
 
         Epic updatedEpic = taskManager.getEpicById(epicId);
 
@@ -39,9 +39,9 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @Test
     void testUpdateEpicStatusNewAndDone() {
-        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", TaskStatus.DONE,
-                "description", 10, LocalDateTime.of(2025, 11, 2,
-                15, 20), epicId));
+        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
+                TaskStatus.DONE, 10, LocalDateTime.of(2025, 11, 2, 15, 20),
+                epicId));
 
         Epic updatedEpic = taskManager.getEpicById(epicId);
 
@@ -50,9 +50,9 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @Test
     void testUpdateEpicStatusInProgress() {
-        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", TaskStatus.IN_PROGRESS,
-                "description", 10, LocalDateTime.of(2025, 11, 2,
-                15, 20), epicId));
+        Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
+                TaskStatus.IN_PROGRESS, 10, LocalDateTime.of(2025, 11, 2, 15,
+                20), epicId));
 
         Epic updatedEpic = taskManager.getEpicById(epicId);
 
@@ -70,7 +70,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @Test
     void testOverLappingInside() {
-        Task task2 = new Task("Задача", TaskStatus.NEW, "Описание", 10,
+        Task task2 = new Task("Задача", "Описание", TaskStatus.NEW, 10,
                 LocalDateTime.of(2025, 11, 1, 9, 10));
         task2.setId(4);
 
@@ -85,7 +85,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @Test
     void testOverLappingBeside() {
-        Task task2 = new Task("Задача", TaskStatus.NEW, "Описание", 10,
+        Task task2 = new Task("Задача", "Описание", TaskStatus.NEW, 10,
                 LocalDateTime.of(2025, 11, 1, 8, 50));
         task2.setId(4);
 
@@ -100,7 +100,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
     @Test
     void testOverLappingBorder() {
-        Task task2 = new Task("Задача", TaskStatus.NEW, "Описание", 50,
+        Task task2 = new Task("Задача", "Описание", TaskStatus.NEW, 50,
                 LocalDateTime.of(2025, 11, 1, 8, 50));
         task2.setId(4);
 
