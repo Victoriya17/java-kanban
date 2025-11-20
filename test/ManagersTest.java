@@ -11,12 +11,14 @@ class ManagersTest {
     @Test
     void getWorkTaskManager() {
         InMemoryTaskManager memoryTaskManager = (InMemoryTaskManager) managers.getDefault();
-        assertNotNull(memoryTaskManager, "Экземпляр com.yandex.app.service.InMemoryTaskManager должен быть не null");
+        assertNotNull(memoryTaskManager, "Экземпляр com.yandex.app.service.InMemoryTaskManager должен быть " +
+                "не null");
     }
 
     @Test
     void getWorkHistoryManager() {
         InMemoryHistoryManager historyManager = (InMemoryHistoryManager) managers.getDefaultHistory();
-        assertNotNull(historyManager, "Экземпляр com.yandex.app.service.InMemoryHistoryManager должен быть не null");
+        assertNotNull(historyManager, "Экземпляр com.yandex.app.service.InMemoryHistoryManager должен быть " +
+                "не null");
     }
 }
