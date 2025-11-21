@@ -1,5 +1,6 @@
 package com.yandex.app;
 
+import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.model.Epic;
 import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
@@ -8,7 +9,7 @@ import com.yandex.app.service.InMemoryTaskManager;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws TimeOverlapException {
         InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
         Task newTask = inMemoryTaskManager.addTask(new Task("Почистить фильтр", "Фильтр " +
                 "бризера надо чистить 2 раза в месяц", TaskStatus.NEW));
@@ -23,6 +24,6 @@ public class Main {
                 "с порошком",TaskStatus.NEW, cleaning.getId()));
         inMemoryTaskManager.getAllTasks();
         inMemoryTaskManager.getAllEpics();
-        inMemoryTaskManager.getAllSubtasks(3);
+        inMemoryTaskManager.getEpicSubtasks(3);
     }
 }
