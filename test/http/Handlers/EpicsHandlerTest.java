@@ -3,6 +3,7 @@ package http.Handlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.http.HttpTaskServer;
 import com.yandex.app.http.adapters.DurationAdapter;
 import com.yandex.app.http.adapters.LocalDateTimeAdapter;
@@ -70,7 +71,7 @@ class EpicsHandlerTest {
     }
 
     @Test
-    void testMissingMethod() throws IOException, InterruptedException {
+    void testMissingMethod() throws IOException, InterruptedException, TimeOverlapException {
         Epic epic = new Epic("Test 1", "Testing epic 1", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         manager.addEpic(epic);
@@ -93,7 +94,7 @@ class EpicsHandlerTest {
     }
 
     @Test
-    void testGetEpics() throws IOException, InterruptedException {
+    void testGetEpics() throws IOException, InterruptedException, TimeOverlapException {
         Epic epic = new Epic("Test 1", "Testing epic 1", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         manager.addEpic(epic);
@@ -143,7 +144,7 @@ class EpicsHandlerTest {
     }
 
     @Test
-    void testUpdateEpic() throws IOException, InterruptedException {
+    void testUpdateEpic() throws IOException, InterruptedException, TimeOverlapException {
         Epic epic1 = new Epic("Test 1", "Testing epic 1", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 5, 2, 9, 0));
         manager.addEpic(epic1);
@@ -196,7 +197,7 @@ class EpicsHandlerTest {
     }
 
     @Test
-    void testGetEpicById() throws IOException, InterruptedException {
+    void testGetEpicById() throws IOException, InterruptedException, TimeOverlapException {
         Epic epic = new Epic("Test 2", "Testing epic 2", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         manager.addEpic(epic);
@@ -219,7 +220,7 @@ class EpicsHandlerTest {
     }
 
     @Test
-    void testDeleteEpicById() throws IOException, InterruptedException {
+    void testDeleteEpicById() throws IOException, InterruptedException, TimeOverlapException {
         Epic epic = new Epic("Test 2", "Testing epic 2", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         manager.addEpic(epic);
@@ -256,7 +257,7 @@ class EpicsHandlerTest {
     }
 
     @Test
-    void testDeleteEpicWithIncorrectId() throws IOException, InterruptedException {
+    void testDeleteEpicWithIncorrectId() throws IOException, InterruptedException, TimeOverlapException {
         Epic epic = new Epic("Test 2", "Testing epic 2", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         manager.addEpic(epic);

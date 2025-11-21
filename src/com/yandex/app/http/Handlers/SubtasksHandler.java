@@ -3,25 +3,24 @@ package com.yandex.app.http.Handlers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.model.Epic;
 import com.yandex.app.model.Subtask;
-import com.yandex.app.model.TaskStatus;
-import com.yandex.app.service.ManagerSaveException;
+import com.yandex.app.exceptions.ManagerSaveException;
 import com.yandex.app.service.TaskManager;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
+public class SubtasksHandler extends BaseHttpHandler {
     public SubtasksHandler(TaskManager taskManager, Gson gson) {
         super(taskManager, gson);
     }
 
     private void handleGetAllSubtasks(HttpExchange exchange) throws IOException {
         System.out.println("Выполняем GET запрос и выводим список всех задач");
-        List<Subtask> subtasksList = taskManager.getAllSubtasks();
+        List<Subtask> subtasksList = taskManager.getEpicSubtasks();
         if (subtasksList.isEmpty()) {
             sendNotFound(exchange);
             return;
@@ -29,49 +28,32 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         sendText(exchange, gson.toJson(subtasksList), 200);
     }
 
-    private void handleAddSubtask(HttpExchange exchange, Subtask subtask) throws IOException {
-        try {
-            System.out.println("Создаем подзадачу " + subtask.getNameOfTask());
-            subtask.setStatus(TaskStatus.NEW);
-            Subtask savedSubtask = taskManager.addSubtask(subtask);
-
-            if (savedSubtask == null) {
-                sendBadRequest(exchange);
-                return;
-            }
-
-            sendText(exchange, gson.toJson(savedSubtask), 201);
-        } catch (ManagerSaveException | IOException exception) {
-            sendHasInteractions(exchange);
-            System.out.println(exception.getMessage());
-        } catch (Exception e) {
-            sendIternalServerError(exchange);
-        }
-    }
-
-    private void handleUpdateSubtask(HttpExchange exchange, Subtask subtask) throws IOException {
-        try {
-            System.out.println("Обновляем подзадачу N " + subtask.getId() + " " + subtask.getNameOfTask());
-            taskManager.updateSubtask(subtask);
-            sendText(exchange, gson.toJson(subtask), 200);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка обновления подзадачи N " + subtask.getId() + " " + subtask.getNameOfTask());
-            sendHasInteractions(exchange);
-        } catch (Exception e) {
-            System.out.println("Внутренняя ошибка при обновлении подзадачи N " + subtask.getId() + ": " +
-                    e.getMessage());
-            sendIternalServerError(exchange);
-        }
-    }
-
     private void handlePostSubtasks(HttpExchange exchange) throws IOException {
         System.out.println("Выполняем POST запрос");
-        JsonObject jsonObject = getJsonFromRequestBody(exchange);
-        Subtask subtask = gson.fromJson(jsonObject, Subtask.class);
-        if (subtask.getId() != 0) {
-            handleUpdateSubtask(exchange, subtask);
-        } else {
-            handleAddSubtask(exchange, subtask);
+        try {
+            JsonObject jsonObject = getJsonFromRequestBody(exchange);
+            Subtask subtask = gson.fromJson(jsonObject, Subtask.class);
+            if (subtask.getId() != 0) {
+                System.out.println("Обновляем подзадачу N " + subtask.getId());
+                taskManager.updateSubtask(subtask);
+                sendText(exchange, gson.toJson(subtask), 200);
+            } else {
+                System.out.println("Создаем задачу " + subtask.getNameOfTask());
+                Subtask savedSubtask = taskManager.addSubtask(subtask);
+                sendText(exchange, gson.toJson(savedSubtask), 201);
+            }
+        } catch (TimeOverlapException e) {
+            System.out.println("Задачи пересекаются " + e.getMessage());
+            sendHasInteractions(exchange);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка обновления подзадачи " + e.getMessage());
+            sendBadRequest(exchange);
+        } catch (ManagerSaveException | IOException exception) {
+            sendInternalServerError(exchange);
+            System.out.println(exception.getMessage());
+        } catch (Exception e) {
+            System.out.println("Внутренняя ошибка при обновлении подзадачи " + e.getMessage());
+            sendInternalServerError(exchange);
         }
     }
 
@@ -85,7 +67,7 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
                 .toList();
 
         for (Integer epicId : epicIds) {
-            List<Subtask> subtasksOfEpic = taskManager.getAllSubtasks(epicId);
+            List<Subtask> subtasksOfEpic = taskManager.getEpicSubtasks(epicId);
             if (!subtasksOfEpic.isEmpty()) {
                 allDeleted = false;
                 break;
@@ -95,7 +77,7 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         if (allDeleted) {
             sendText(exchange, "{\"message\": \"Все подзадачи успешно удалены\"}", 200);
         } else {
-            sendIternalServerError(exchange);
+            sendInternalServerError(exchange);
         }
     }
 
@@ -131,7 +113,7 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
 
         } catch (Exception e) {
             System.out.println("Ошибка при удалении подзадачи с ID " + id + ": " + e.getMessage());
-            sendIternalServerError(exchange);
+            sendInternalServerError(exchange);
         }
     }
 

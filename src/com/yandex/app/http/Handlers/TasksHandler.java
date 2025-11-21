@@ -3,17 +3,16 @@ package com.yandex.app.http.Handlers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.model.Task;
-import com.yandex.app.model.TaskStatus;
-import com.yandex.app.service.ManagerSaveException;
+import com.yandex.app.exceptions.ManagerSaveException;
 import com.yandex.app.service.TaskManager;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class TasksHandler extends BaseHttpHandler implements HttpHandler {
+public class TasksHandler extends BaseHttpHandler {
     public TasksHandler(TaskManager taskManager, Gson gson) {
         super(taskManager, gson);
     }
@@ -28,53 +27,32 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
         sendText(exchange, gson.toJson(tasksList), 200);
     }
 
-    private void handleAddTask(HttpExchange exchange, Task task) throws IOException {
-        try {
-            System.out.println("Создаем задачу " + task.getNameOfTask());
-            task.setStatus(TaskStatus.NEW);
-            Task savedTask = taskManager.addTask(task);
-
-            if (savedTask == null) {
-                sendBadRequest(exchange);
-                return;
-            }
-
-            sendText(exchange, gson.toJson(savedTask), 201);
-        } catch (ManagerSaveException | IOException exception) {
-            sendHasInteractions(exchange);
-            System.out.println(exception.getMessage());
-        } catch (Exception e) {
-            sendIternalServerError(exchange);
-        }
-    }
-
-    private void handleUpdateTask(HttpExchange exchange, Task task) throws IOException {
-        try {
-            taskManager.updateTask(task);
-            System.out.println("Обновляем задачу N " + task.getId());
-            sendText(exchange, gson.toJson(task), 200);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка обновления задачи N " + task.getId() + ": " + e.getMessage());
-            sendHasInteractions(exchange);
-        } catch (Exception e) {
-            System.out.println("Внутренняя ошибка при обновлении задачи N " + task.getId() + ": " + e.getMessage());
-            sendIternalServerError(exchange);
-        }
-    }
-
     private void handlePostTasks(HttpExchange exchange) throws IOException {
         System.out.println("Выполняем POST запрос");
-        JsonObject jsonObject = getJsonFromRequestBody(exchange);
-        System.out.println("Тело запроса: " + jsonObject);
-
-        Task task = gson.fromJson(jsonObject, Task.class);
-
-        if (task.getId() != 0) {
-            System.out.println("Обновляем задачу с ID: " + task.getId());
-            handleUpdateTask(exchange, task);
-        } else {
-            System.out.println("Создаём новую задачу");
-            handleAddTask(exchange, task);
+        try {
+            JsonObject jsonObject = getJsonFromRequestBody(exchange);
+            Task task = gson.fromJson(jsonObject, Task.class);
+            if (task.getId() != 0) {
+                System.out.println("Обновляем задачу N " + task.getId());
+                taskManager.updateTask(task);
+                sendText(exchange, gson.toJson(task), 200);
+            } else {
+                System.out.println("Создаем задачу " + task.getNameOfTask());
+                Task savedTask = taskManager.addTask(task);
+                sendText(exchange, gson.toJson(savedTask), 201);
+            }
+        } catch (TimeOverlapException e) {
+            System.out.println("Задачи пересекаются " + e.getMessage());
+            sendHasInteractions(exchange);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка обновления задачи " + e.getMessage());
+            sendBadRequest(exchange);
+        } catch (ManagerSaveException | IOException exception) {
+            sendInternalServerError(exchange);
+            System.out.println(exception.getMessage());
+        } catch (Exception e) {
+            System.out.println("Внутренняя ошибка при обновлении задачи " + e.getMessage());
+            sendInternalServerError(exchange);
         }
     }
 
@@ -85,7 +63,7 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
         if (allDeleted) {
             sendText(exchange, "{\"message\": \"Все задачи успешно удалены\"}", 200);
         } else {
-            sendIternalServerError(exchange);
+            sendInternalServerError(exchange);
         }
     }
 
@@ -119,7 +97,7 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
             sendText(exchange, "{\"message\": \"Задача удалена\"}", 200);
         } else {
             System.out.println("Задача не удалена");
-            sendIternalServerError(exchange);
+            sendInternalServerError(exchange);
         }
     }
 

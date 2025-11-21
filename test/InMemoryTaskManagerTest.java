@@ -1,3 +1,4 @@
+import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.model.*;
 import com.yandex.app.service.InMemoryTaskManager;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testUpdateEpicStatusAllNew() {
+    void testUpdateEpicStatusAllNew() throws TimeOverlapException {
         Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
                 TaskStatus.NEW, 10, LocalDateTime.of(2025, 11, 2, 15, 20),
                 epicId));
@@ -26,7 +27,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testUpdateEpicStatusAllDone() {
+    void testUpdateEpicStatusAllDone() throws TimeOverlapException {
         subtask.setStatus(TaskStatus.DONE);
         Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
                 TaskStatus.DONE, 10, LocalDateTime.of(2025, 11, 2, 15, 20),
@@ -38,7 +39,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testUpdateEpicStatusNewAndDone() {
+    void testUpdateEpicStatusNewAndDone() throws TimeOverlapException {
         Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
                 TaskStatus.DONE, 10, LocalDateTime.of(2025, 11, 2, 15, 20),
                 epicId));
@@ -49,7 +50,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testUpdateEpicStatusInProgress() {
+    void testUpdateEpicStatusInProgress() throws TimeOverlapException {
         Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
                 TaskStatus.IN_PROGRESS, 10, LocalDateTime.of(2025, 11, 2, 15,
                 20), epicId));
@@ -98,12 +99,12 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertTrue(exception.getMessage().contains("пересекается по времени"),
                 "Сообщение должно содержать 'пересекается по времени'");
 
-        List<Subtask> allSubtasks = taskManager.getAllSubtasks(epicId);
+        List<Subtask> allSubtasks = taskManager.getEpicSubtasks(epicId);
         assertEquals(1, allSubtasks.size(), "Количество подзадач не должно измениться после ошибки");
     }
 
     @Test
-    void testOverLappingTasksBeside() {
+    void testOverLappingTasksBeside() throws TimeOverlapException {
         Task task2 = new Task("Задача", "Описание", TaskStatus.NEW, 10,
                 LocalDateTime.of(2025, 11, 1, 8, 50));
         taskManager.addTask(task2);
@@ -113,12 +114,12 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testOverLappingSubtasksBeside() {
+    void testOverLappingSubtasksBeside() throws TimeOverlapException {
         Subtask subtask2 = new Subtask("Подзадача", "Описание", TaskStatus.NEW, 10,
                 LocalDateTime.of(2025, 11, 1, 8, 50), epicId);
         taskManager.addSubtask(subtask2);
 
-        List<Subtask> allSubtasks = taskManager.getAllSubtasks(epicId);
+        List<Subtask> allSubtasks = taskManager.getEpicSubtasks(epicId);
         assertEquals(2, allSubtasks.size(), "Количество подзадач должно увеличиться на 1");
     }
 
@@ -152,7 +153,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertTrue(exception.getMessage().contains("пересекается по времени"),
                 "Сообщение должно содержать 'пересекается по времени'");
 
-        List<Subtask> allSubtasks = taskManager.getAllSubtasks(epicId);
+        List<Subtask> allSubtasks = taskManager.getEpicSubtasks(epicId);
         assertEquals(1, allSubtasks.size(), "Количество задач не должно измениться после ошибки");
     }
 }

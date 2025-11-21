@@ -1,3 +1,4 @@
+import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.model.Epic;
 import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
@@ -27,7 +28,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     private Epic savedEpic;
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws TimeOverlapException {
         taskManager = createTaskManager();
         task = taskManager.addTask(new Task("Задача", "Описание задачи", TaskStatus.NEW,
                 90, LocalDateTime.of(2025, 11, 1, 9, 0)));
@@ -67,7 +68,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void subtasksListNotNull() {
-        final List<Subtask> subtasks = taskManager.getAllSubtasks(epicId);
+        final List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
         assertNotNull(subtasks, "Подзадачи не возвращаются.");
     }
 
@@ -88,7 +89,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void deleteSubtasks() {
         taskManager.deleteAllSubtasks();
-        final List<Subtask> subtasks = taskManager.getAllSubtasks(epicId);
+        final List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
         assertEquals(0, subtasks.size(), "Список подзадач должен быть пуст после удаления всех" +
                 " подзадач.");
     }
@@ -101,7 +102,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void idUnique() {
+    void idUnique() throws TimeOverlapException {
         Task task2 = taskManager.addTask(new Task("Задача", "Описание задачи",
                 TaskStatus.IN_PROGRESS, 90, LocalDateTime.of(2025, 11, 2, 9,
                 0)));
@@ -140,7 +141,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void oneSubtaskInSubtasksList() {
-        final List<Subtask> subtasks = taskManager.getAllSubtasks(epicId);
+        final List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
         assertEquals(1, subtasks.size(), "Неверное количество подзадач.");
     }
 
@@ -158,12 +159,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void subtasksEquals() {
-        final List<Subtask> subtasks = taskManager.getAllSubtasks(epicId);
+        final List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
         assertEquals(subtask, subtasks.get(0), "Задачи не совпадают.");
     }
 
     @Test
-    void testUpdateTask() {
+    void testUpdateTask() throws TimeOverlapException {
         Task updatedTask = new Task("Новая задача", "Новое описание", TaskStatus.DONE,
                 120, LocalDateTime.of(2025, 11, 2, 10, 0));
         updatedTask.setId(taskId);
@@ -179,7 +180,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testUpdateSubtask() {
+    void testUpdateSubtask() throws TimeOverlapException {
         Subtask updatedSubtask = new Subtask("Новая задача", "Новое описание", TaskStatus.NEW,
                 120, LocalDateTime.of(2025, 11, 2, 10, 0), epicId);
         updatedSubtask.setId(subtaskId);
@@ -195,7 +196,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testUpdateEpic() {
+    void testUpdateEpic() throws TimeOverlapException {
         Epic updatedEpic = new Epic("Новая задача", "Новое описание", TaskStatus.DONE,
                 120, LocalDateTime.of(2025, 11, 2, 10, 0));
         updatedEpic.setId(epicId);
@@ -211,7 +212,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testGetPrioritizedTasks() {
+    void testGetPrioritizedTasks() throws TimeOverlapException {
         Task task2 = taskManager.addTask(new Task("Без времени", "", TaskStatus.NEW,
                 30, null));
 

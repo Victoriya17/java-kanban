@@ -3,6 +3,7 @@ package http.Handlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.http.HttpTaskServer;
 import com.yandex.app.http.adapters.DurationAdapter;
 import com.yandex.app.http.adapters.LocalDateTimeAdapter;
@@ -41,7 +42,7 @@ class SubtasksHandlerTest {
     }
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws TimeOverlapException {
         manager.deleteAllTasks();
         manager.deleteAllSubtasks();
         manager.deleteAllEpics();
@@ -70,13 +71,13 @@ class SubtasksHandlerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(404, response.statusCode());
 
-        List<Subtask> tasksFromManager = manager.getAllSubtasks(epicId);
+        List<Subtask> tasksFromManager = manager.getEpicSubtasks(epicId);
 
         assertEquals(0, tasksFromManager.size(), "Некорректное количество подзадач");
     }
 
     @Test
-    void testMissingMethod() throws IOException, InterruptedException {
+    void testMissingMethod() throws IOException, InterruptedException, TimeOverlapException {
         Subtask subtask = new Subtask("Test 1", "Testing subtask 1", TaskStatus.NEW,
                 90, LocalDateTime.now(), epicId);
         manager.addSubtask(subtask);
@@ -92,14 +93,14 @@ class SubtasksHandlerTest {
 
         assertEquals(400, response.statusCode());
 
-        List<Subtask> tasksFromManager = manager.getAllSubtasks(epicId);
+        List<Subtask> tasksFromManager = manager.getEpicSubtasks(epicId);
 
         assertNotNull(tasksFromManager, "Подзадачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество подзадач");
     }
 
     @Test
-    void testGetSubtasks() throws IOException, InterruptedException {
+    void testGetSubtasks() throws IOException, InterruptedException, TimeOverlapException {
         Subtask subtask = new Subtask("Test 1", "Testing subtask 1", TaskStatus.NEW,
                 90, LocalDateTime.now(), epicId);
         manager.addSubtask(subtask);
@@ -141,7 +142,7 @@ class SubtasksHandlerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(201, response.statusCode());
 
-        List<Subtask> tasksFromManager = manager.getAllSubtasks(epicId);
+        List<Subtask> tasksFromManager = manager.getEpicSubtasks(epicId);
 
         assertNotNull(tasksFromManager, "Подзадачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество подзадач");
@@ -149,7 +150,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testUpdateSubtask() throws IOException, InterruptedException {
+    void testUpdateSubtask() throws IOException, InterruptedException, TimeOverlapException {
         Subtask subtask1 = new Subtask("Test 1", "Testing subtask 1", TaskStatus.NEW,
                 90, LocalDateTime.of(2025, 5, 2, 9, 0), epicId);
         manager.addSubtask(subtask1);
@@ -172,7 +173,7 @@ class SubtasksHandlerTest {
 
         assertEquals(200, response.statusCode());
 
-        List<Subtask> tasksFromManager = manager.getAllSubtasks(epicId);
+        List<Subtask> tasksFromManager = manager.getEpicSubtasks(epicId);
 
         assertNotNull(tasksFromManager, "Подзадачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество подзадач");
@@ -197,14 +198,14 @@ class SubtasksHandlerTest {
         assertEquals(200, response.statusCode());
 
         manager.deleteAllSubtasks();
-        List<Subtask> tasksFromManager = manager.getAllSubtasks(epicId);
+        List<Subtask> tasksFromManager = manager.getEpicSubtasks(epicId);
 
         assertEquals(0, tasksFromManager.size(), "Некорректное количество подзадач");
         assertNotNull(tasksFromManager, "Подзадачи не возвращаются");
     }
 
     @Test
-    void testGetSubtaskById() throws IOException, InterruptedException {
+    void testGetSubtaskById() throws IOException, InterruptedException, TimeOverlapException {
         Subtask subtask = new Subtask("Test 2", "Testing subtask 2", TaskStatus.NEW,
                 90, LocalDateTime.now(), epicId);
         manager.addSubtask(subtask);
@@ -226,7 +227,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testDeleteSubtaskById() throws IOException, InterruptedException {
+    void testDeleteSubtaskById() throws IOException, InterruptedException, TimeOverlapException {
         Subtask subtask = new Subtask("Test 2", "Testing subtask 2", TaskStatus.NEW,
                 90, LocalDateTime.now(), epicId);
         manager.addSubtask(subtask);
@@ -241,7 +242,7 @@ class SubtasksHandlerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
 
-        List<Subtask> subtaskList = manager.getAllSubtasks(epicId);
+        List<Subtask> subtaskList = manager.getEpicSubtasks(epicId);
 
         assertNotNull(subtaskList, "Подзадачи не возвращаются");
         assertEquals(0, subtaskList.size(), "Некорректное количество подзадач");
@@ -263,7 +264,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testDeleteSubtaskWithIncorrectId() throws IOException, InterruptedException {
+    void testDeleteSubtaskWithIncorrectId() throws IOException, InterruptedException, TimeOverlapException {
         Subtask subtask = new Subtask("Test 2", "Testing subtask 2", TaskStatus.NEW,
                 90, LocalDateTime.now(), epicId);
         manager.addSubtask(subtask);
@@ -278,14 +279,14 @@ class SubtasksHandlerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(400, response.statusCode());
 
-        List<Subtask> subtaskList = manager.getAllSubtasks(epicId);
+        List<Subtask> subtaskList = manager.getEpicSubtasks(epicId);
 
         assertNotNull(subtaskList, "Подзадачи не возвращаются");
         assertEquals(1, subtaskList.size(), "Задано некорректное id");
     }
 
     @Test
-    void testAddSubtaskWithCrossStartTime() throws IOException, InterruptedException {
+    void testAddSubtaskWithCrossStartTime() throws IOException, InterruptedException, TimeOverlapException {
         Subtask subtask1 = new Subtask("Test 1", "Testing subtask 1", TaskStatus.NEW,
                 90, LocalDateTime.of(2025, 5, 2, 9, 0), epicId);
         manager.addSubtask(subtask1);
@@ -304,16 +305,16 @@ class SubtasksHandlerTest {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(500, response.statusCode());
+        assertEquals(406, response.statusCode());
 
-        List<Subtask> tasksFromManager = manager.getAllSubtasks(epicId);
+        List<Subtask> tasksFromManager = manager.getEpicSubtasks(epicId);
 
         assertNotNull(tasksFromManager, "Подзадачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
     }
 
     @Test
-    void testUpdateSubtaskWithCrossStartTime() throws IOException, InterruptedException {
+    void testUpdateSubtaskWithCrossStartTime() throws IOException, InterruptedException, TimeOverlapException {
         Subtask subtask1 = new Subtask("Test 1", "Testing subtask 1", TaskStatus.NEW,
                 90, LocalDateTime.of(2025, 5, 2, 9, 0), epicId);
         manager.addSubtask(subtask1);
@@ -335,7 +336,7 @@ class SubtasksHandlerTest {
 
         assertEquals(406, response.statusCode());
 
-        List<Subtask> tasksFromManager = manager.getAllSubtasks(epicId);
+        List<Subtask> tasksFromManager = manager.getEpicSubtasks(epicId);
 
         assertNotNull(tasksFromManager, "Подзадачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество подзадач");

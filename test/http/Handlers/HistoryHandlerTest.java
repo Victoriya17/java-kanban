@@ -1,5 +1,6 @@
 package http.Handlers;
 
+import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.http.HttpTaskServer;
 import com.yandex.app.model.Task;
 import com.yandex.app.model.TaskStatus;
@@ -41,7 +42,7 @@ class HistoryHandlerTest {
     }
 
     @Test
-    void testGetHistory() throws IOException, InterruptedException {
+    void testGetHistory() throws IOException, InterruptedException, TimeOverlapException {
         Task task1 = new Task("Test 1", "Testing task 1", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 5, 2, 9, 0));
         manager.addTask(task1);
@@ -84,7 +85,7 @@ class HistoryHandlerTest {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(404, response.statusCode());
+        assertEquals(200, response.statusCode());
 
         List<Task> historyFromManager = manager.getHistory();
 

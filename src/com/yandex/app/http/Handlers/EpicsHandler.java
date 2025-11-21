@@ -3,17 +3,17 @@ package com.yandex.app.http.Handlers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.model.Epic;
-import com.yandex.app.model.TaskStatus;
-import com.yandex.app.service.ManagerSaveException;
+import com.yandex.app.exceptions.ManagerSaveException;
+import com.yandex.app.model.Subtask;
 import com.yandex.app.service.TaskManager;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
+public class EpicsHandler extends BaseHttpHandler {
     public EpicsHandler(TaskManager taskManager, Gson gson) {
         super(taskManager, gson);
     }
@@ -28,48 +28,32 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         sendText(exchange, gson.toJson(epicsList), 200);
     }
 
-    private void handleAddEpic(HttpExchange exchange, Epic epic) throws IOException {
-        try {
-            System.out.println("Создаем задачу " + epic.getNameOfTask());
-            epic.setStatus(TaskStatus.NEW);
-            Epic savedEpic = taskManager.addEpic(epic);
-
-            if (savedEpic == null) {
-                sendBadRequest(exchange);
-                return;
-            }
-
-            sendText(exchange, gson.toJson(savedEpic), 201);
-        } catch (ManagerSaveException | IOException exception) {
-            sendHasInteractions(exchange);
-            System.out.println(exception.getMessage());
-        } catch (Exception e) {
-            sendIternalServerError(exchange);
-        }
-    }
-
-    private void handleUpdateEpic(HttpExchange exchange, Epic epic) throws IOException {
-        try {
-            taskManager.updateEpic(epic);
-            System.out.println("Обновляем эпик N " + epic.getId());
-            sendText(exchange, gson.toJson(epic), 200);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка обновления эпика N " + epic.getId() + ": " + e.getMessage());
-            sendHasInteractions(exchange);
-        } catch (Exception e) {
-            System.out.println("Внутренняя ошибка при обновлении эпика N " + epic.getId() + ": " + e.getMessage());
-            sendIternalServerError(exchange);
-        }
-    }
-
     private void handlePostEpics(HttpExchange exchange) throws IOException {
         System.out.println("Выполняем POST запрос");
-        JsonObject jsonObject = getJsonFromRequestBody(exchange);
-        Epic epic = gson.fromJson(jsonObject, Epic.class);
-        if (epic.getId() != 0) {
-            handleUpdateEpic(exchange, epic);
-        } else {
-            handleAddEpic(exchange, epic);
+        try {
+            JsonObject jsonObject = getJsonFromRequestBody(exchange);
+            Epic epic = gson.fromJson(jsonObject, Epic.class);
+            if (epic.getId() != 0) {
+                System.out.println("Обновляем эпик N " + epic.getId());
+                taskManager.updateEpic(epic);
+                sendText(exchange, gson.toJson(epic), 200);
+            } else {
+                System.out.println("Создаем эпик " + epic.getNameOfTask());
+                Epic savedEpic = taskManager.addEpic(epic);
+                sendText(exchange, gson.toJson(savedEpic), 201);
+            }
+        } catch (TimeOverlapException e) {
+            System.out.println("Задачи пересекаются " + e.getMessage());
+            sendHasInteractions(exchange);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка обновления эпика " + e.getMessage());
+            sendBadRequest(exchange);
+        } catch (ManagerSaveException | IOException exception) {
+            sendInternalServerError(exchange);
+            System.out.println(exception.getMessage());
+        } catch (Exception e) {
+            System.out.println("Внутренняя ошибка при обновлении эпика " + e.getMessage());
+            sendInternalServerError(exchange);
         }
     }
 
@@ -80,7 +64,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         if (allDeleted) {
             sendText(exchange, "{\"message\": \"Все эпики успешно удалены\"}", 200);
         } else {
-            sendIternalServerError(exchange);
+            sendInternalServerError(exchange);
         }
     }
 
@@ -118,6 +102,30 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
+    private void handleGetEpicSubtasks(HttpExchange exchange, Optional<Integer> epicId) throws IOException {
+        try {
+            System.out.println("Выполняем GET запрос");
+            if (epicId.isEmpty()) {
+                System.out.println("Ошибка: ID эпика не указан");
+                sendBadRequest(exchange);
+                return;
+            }
+
+            Epic epic = taskManager.getEpicById(epicId.get());
+            if (epic == null) {
+                sendNotFound(exchange);
+                return;
+            }
+
+            List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId.get());
+            sendText(exchange, gson.toJson(subtasks), 200);
+
+        } catch (Exception e) {
+            System.out.println("Ошибка при получении подзадач: " + e.getMessage());
+            sendInternalServerError(exchange);
+        }
+    }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
@@ -137,7 +145,15 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
                 case "DELETE" -> handleDeleteEpicById(exchange, epicId);
                 default -> sendBadRequest(exchange);
             }
+        } else if (splitStrings.length == 4 && "subtasks".equals(splitStrings[3])) {
+            Optional<Integer> epicId = getIdFromPath(exchange);
+            if ("GET".equals(exchange.getRequestMethod())) {
+                handleGetEpicSubtasks(exchange, epicId);
+            } else {
+                sendBadRequest(exchange);
+            }
+        } else {
+            sendBadRequest(exchange);
         }
     }
-
 }

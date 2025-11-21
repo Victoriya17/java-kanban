@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import com.yandex.app.service.TaskManager;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public abstract class BaseHttpHandler {
+public abstract class BaseHttpHandler implements HttpHandler {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     protected Gson gson;
     protected TaskManager taskManager;
@@ -56,7 +57,7 @@ public abstract class BaseHttpHandler {
         sendText(exchange, response,406);
     }
 
-    protected void sendIternalServerError(HttpExchange exchange) throws IOException {
+    protected void sendInternalServerError(HttpExchange exchange) throws IOException {
         String response = "Произошла ошибка при обработке запроса";
         sendText(exchange, response,500);
     }
@@ -65,6 +66,4 @@ public abstract class BaseHttpHandler {
         String response = "В запросе синтаксическая ошибка";
         sendText(exchange, response,400);
     }
-
-    public abstract void handle(HttpExchange exchange) throws IOException;
 }
