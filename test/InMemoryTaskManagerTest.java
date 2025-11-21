@@ -74,8 +74,8 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Task task2 = new Task("Задача", "Описание", TaskStatus.NEW, 10,
                 LocalDateTime.of(2025, 11, 1, 9, 10));
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        TimeOverlapException exception = assertThrows(
+                TimeOverlapException.class,
                 () -> taskManager.addTask(task2)
         );
 
@@ -91,8 +91,8 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Subtask subtask2 = new Subtask("Подзадача", "Описание", TaskStatus.NEW, 10,
                 LocalDateTime.of(2025, 11, 1, 9, 10), epicId);
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        TimeOverlapException exception = assertThrows(
+                TimeOverlapException.class,
                 () -> taskManager.addSubtask(subtask2)
         );
 
@@ -128,8 +128,8 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Task task2 = new Task("Задача", "Описание", TaskStatus.NEW, 50,
                 LocalDateTime.of(2025, 11, 1, 8, 50));
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        TimeOverlapException exception = assertThrows(
+                TimeOverlapException.class,
                 () -> taskManager.addTask(task2)
         );
 
@@ -145,8 +145,8 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Subtask subtask2 = new Subtask("Задача", "Описание", TaskStatus.NEW, 50,
                 LocalDateTime.of(2025, 11, 1, 8, 50), epicId);
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        TimeOverlapException exception = assertThrows(
+                TimeOverlapException.class,
                 () -> taskManager.addTask(subtask2)
         );
 
