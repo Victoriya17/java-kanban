@@ -1,3 +1,4 @@
+import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.model.Task;
 import com.yandex.app.model.TaskStatus;
 import com.yandex.app.service.InMemoryTaskManager;
@@ -28,7 +29,7 @@ class TaskTest {
     }
 
     @Test
-    void testTaskImmutability() {
+    void testTaskImmutability() throws TimeOverlapException {
         InMemoryTaskManager taskManager = new InMemoryTaskManager();
         Task addedTask = new Task(task1.getNameOfTask(), task1.getDescriptionOfTask(), task1.getStatus(),
                 task1.getDurationToMinutes(), task1.getStartTime());

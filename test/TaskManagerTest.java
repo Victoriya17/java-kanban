@@ -67,7 +67,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void subtasksListNotNull() {
-        final List<Subtask> subtasks = taskManager.getAllSubtasks(epicId);
+        final List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
         assertNotNull(subtasks, "Подзадачи не возвращаются.");
     }
 
@@ -88,7 +88,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void deleteSubtasks() {
         taskManager.deleteAllSubtasks();
-        final List<Subtask> subtasks = taskManager.getAllSubtasks(epicId);
+        final List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
         assertEquals(0, subtasks.size(), "Список подзадач должен быть пуст после удаления всех" +
                 " подзадач.");
     }
@@ -140,7 +140,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void oneSubtaskInSubtasksList() {
-        final List<Subtask> subtasks = taskManager.getAllSubtasks(epicId);
+        final List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
         assertEquals(1, subtasks.size(), "Неверное количество подзадач.");
     }
 
@@ -158,7 +158,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void subtasksEquals() {
-        final List<Subtask> subtasks = taskManager.getAllSubtasks(epicId);
+        final List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId);
         assertEquals(subtask, subtasks.get(0), "Задачи не совпадают.");
     }
 

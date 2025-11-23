@@ -38,7 +38,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         List<Epic> epics = loadedManager.getAllEpics();
         if (!epics.isEmpty()) {
             for (Epic epic : epics) {
-                assertTrue(loadedManager.getAllSubtasks(epic.getId()).isEmpty(),
+                assertTrue(loadedManager.getEpicSubtasks(epic.getId()).isEmpty(),
                         "Подзадачи для эпика " + epic.getId() + " должны отсутствовать");
             }
         }
@@ -54,7 +54,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
 
         assertEquals(taskManager.getAllTasks(), loadedManager.getAllTasks());
-        assertEquals(taskManager.getAllSubtasks(2), loadedManager.getAllSubtasks(2));
+        assertEquals(taskManager.getEpicSubtasks(2), loadedManager.getEpicSubtasks(2));
         assertEquals(taskManager.getAllEpics(), loadedManager.getAllEpics());
     }
 
