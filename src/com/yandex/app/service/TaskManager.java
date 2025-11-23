@@ -1,6 +1,5 @@
 package com.yandex.app.service;
 
-import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.model.Epic;
 import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
@@ -8,17 +7,17 @@ import com.yandex.app.model.Task;
 import java.util.List;
 
 public interface TaskManager {
-    Task addTask(Task task) throws TimeOverlapException;
+    Task addTask(Task task);
 
-    Subtask addSubtask(Subtask subtask) throws TimeOverlapException;
+    Subtask addSubtask(Subtask subtask);
 
-    Epic addEpic(Epic epic) throws TimeOverlapException;
+    Epic addEpic(Epic epic);
 
     List<Task> getAllTasks();
 
     List<Subtask> getEpicSubtasks(int epicId);
 
-    List<Subtask> getEpicSubtasks();
+    List<Subtask> getAllSubtasks();
 
     List<Epic> getAllEpics();
 
@@ -40,11 +39,11 @@ public interface TaskManager {
 
     Epic getEpicById(Integer id);
 
-    void updateTask(Task task) throws TimeOverlapException;
+    void updateTask(Task task);
 
-    void updateSubtask(Subtask subtask) throws TimeOverlapException;
+    void updateSubtask(Subtask subtask);
 
-    void updateEpic(Epic epic) throws TimeOverlapException;
+    void updateEpic(Epic epic);
 
     List<Task> getPrioritizedTasks();
 

@@ -35,7 +35,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task addTask(Task task) throws TimeOverlapException {
+    public Task addTask(Task task) {
         if (task == null) {
             throw new IllegalArgumentException("Task не может быть null");
         }
@@ -55,7 +55,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask addSubtask(Subtask subtask) throws TimeOverlapException {
+    public Subtask addSubtask(Subtask subtask) {
         if (subtask == null) {
             throw new IllegalArgumentException("Subtask не может быть null");
         }
@@ -86,7 +86,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic addEpic(Epic epic) throws TimeOverlapException {
+    public Epic addEpic(Epic epic) {
         if (epic == null) {
             throw new IllegalArgumentException("Epic не может быть null");
         }
@@ -116,7 +116,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Subtask> getEpicSubtasks() {
+    public List<Subtask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
 
@@ -245,7 +245,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) throws TimeOverlapException {
+    public void updateTask(Task task) {
         if (hasOverlappingTasks(task).isEmpty()) {
             if (task.getStartTime() != null) {
                 prioritizedSet.remove(tasks.get(task.getId()));
@@ -259,7 +259,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) throws TimeOverlapException {
+    public void updateSubtask(Subtask subtask) {
         if (hasOverlappingTasks(subtask).isEmpty()) {
             if (subtask.getStartTime() != null) {
                 prioritizedSet.remove(subtasks.get(subtask.getId()));
@@ -276,7 +276,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateEpic(Epic epic) throws TimeOverlapException {
+    public void updateEpic(Epic epic) {
         if (hasOverlappingTasks(epic).isEmpty()) {
             if (epic.getStartTime() != null) {
                 prioritizedSet.remove(epics.get(epic.getId()));

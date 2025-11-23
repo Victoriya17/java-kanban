@@ -1,4 +1,3 @@
-import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.model.Epic;
 import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
@@ -28,7 +27,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     private Epic savedEpic;
 
     @BeforeEach
-    void beforeEach() throws TimeOverlapException {
+    void beforeEach() {
         taskManager = createTaskManager();
         task = taskManager.addTask(new Task("Задача", "Описание задачи", TaskStatus.NEW,
                 90, LocalDateTime.of(2025, 11, 1, 9, 0)));
@@ -102,7 +101,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void idUnique() throws TimeOverlapException {
+    void idUnique() {
         Task task2 = taskManager.addTask(new Task("Задача", "Описание задачи",
                 TaskStatus.IN_PROGRESS, 90, LocalDateTime.of(2025, 11, 2, 9,
                 0)));
@@ -164,7 +163,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testUpdateTask() throws TimeOverlapException {
+    void testUpdateTask() {
         Task updatedTask = new Task("Новая задача", "Новое описание", TaskStatus.DONE,
                 120, LocalDateTime.of(2025, 11, 2, 10, 0));
         updatedTask.setId(taskId);
@@ -180,7 +179,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testUpdateSubtask() throws TimeOverlapException {
+    void testUpdateSubtask() {
         Subtask updatedSubtask = new Subtask("Новая задача", "Новое описание", TaskStatus.NEW,
                 120, LocalDateTime.of(2025, 11, 2, 10, 0), epicId);
         updatedSubtask.setId(subtaskId);
@@ -196,7 +195,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testUpdateEpic() throws TimeOverlapException {
+    void testUpdateEpic() {
         Epic updatedEpic = new Epic("Новая задача", "Новое описание", TaskStatus.DONE,
                 120, LocalDateTime.of(2025, 11, 2, 10, 0));
         updatedEpic.setId(epicId);
@@ -212,7 +211,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testGetPrioritizedTasks() throws TimeOverlapException {
+    void testGetPrioritizedTasks() {
         Task task2 = taskManager.addTask(new Task("Без времени", "", TaskStatus.NEW,
                 30, null));
 

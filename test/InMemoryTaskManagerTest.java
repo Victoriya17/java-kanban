@@ -16,7 +16,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testUpdateEpicStatusAllNew() throws TimeOverlapException {
+    void testUpdateEpicStatusAllNew() {
         Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
                 TaskStatus.NEW, 10, LocalDateTime.of(2025, 11, 2, 15, 20),
                 epicId));
@@ -27,7 +27,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testUpdateEpicStatusAllDone() throws TimeOverlapException {
+    void testUpdateEpicStatusAllDone() {
         subtask.setStatus(TaskStatus.DONE);
         Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
                 TaskStatus.DONE, 10, LocalDateTime.of(2025, 11, 2, 15, 20),
@@ -39,7 +39,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testUpdateEpicStatusNewAndDone() throws TimeOverlapException {
+    void testUpdateEpicStatusNewAndDone() {
         Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
                 TaskStatus.DONE, 10, LocalDateTime.of(2025, 11, 2, 15, 20),
                 epicId));
@@ -50,7 +50,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testUpdateEpicStatusInProgress() throws TimeOverlapException {
+    void testUpdateEpicStatusInProgress() {
         Subtask subtask2 = taskManager.addSubtask(new Subtask("subtask", "description",
                 TaskStatus.IN_PROGRESS, 10, LocalDateTime.of(2025, 11, 2, 15,
                 20), epicId));
@@ -104,7 +104,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testOverLappingTasksBeside() throws TimeOverlapException {
+    void testOverLappingTasksBeside() {
         Task task2 = new Task("Задача", "Описание", TaskStatus.NEW, 10,
                 LocalDateTime.of(2025, 11, 1, 8, 50));
         taskManager.addTask(task2);
@@ -114,7 +114,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testOverLappingSubtasksBeside() throws TimeOverlapException {
+    void testOverLappingSubtasksBeside() {
         Subtask subtask2 = new Subtask("Подзадача", "Описание", TaskStatus.NEW, 10,
                 LocalDateTime.of(2025, 11, 1, 8, 50), epicId);
         taskManager.addSubtask(subtask2);

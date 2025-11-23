@@ -20,7 +20,7 @@ public class SubtasksHandler extends BaseHttpHandler {
 
     private void handleGetAllSubtasks(HttpExchange exchange) throws IOException {
         System.out.println("Выполняем GET запрос и выводим список всех задач");
-        List<Subtask> subtasksList = taskManager.getEpicSubtasks();
+        List<Subtask> subtasksList = taskManager.getAllSubtasks();
         if (subtasksList.isEmpty()) {
             sendNotFound(exchange);
             return;

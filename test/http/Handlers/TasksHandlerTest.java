@@ -3,7 +3,6 @@ package http.Handlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.http.HttpTaskServer;
 import com.yandex.app.http.adapters.DurationAdapter;
 import com.yandex.app.http.adapters.LocalDateTimeAdapter;
@@ -70,7 +69,7 @@ class TasksHandlerTest {
     }
 
     @Test
-    void testMissingMethod() throws IOException, InterruptedException, TimeOverlapException {
+    void testMissingMethod() throws IOException, InterruptedException {
         Task task = new Task("Test 1", "Testing task 1", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         manager.addTask(task);
@@ -93,7 +92,7 @@ class TasksHandlerTest {
     }
 
     @Test
-    void testGetTasks() throws IOException, InterruptedException, TimeOverlapException {
+    void testGetTasks() throws IOException, InterruptedException {
         Task task = new Task("Test 1", "Testing task 1", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         manager.addTask(task);
@@ -143,7 +142,7 @@ class TasksHandlerTest {
     }
 
     @Test
-    void testUpdateTask() throws IOException, InterruptedException, TimeOverlapException {
+    void testUpdateTask() throws IOException, InterruptedException {
         Task task1 = new Task("Test 1", "Testing task 1", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 5, 2, 9, 0));
         manager.addTask(task1);
@@ -196,7 +195,7 @@ class TasksHandlerTest {
     }
 
     @Test
-    void testGetTaskById() throws IOException, InterruptedException, TimeOverlapException {
+    void testGetTaskById() throws IOException, InterruptedException {
         Task task = new Task("Test 2", "Testing task 2", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         manager.addTask(task);
@@ -219,7 +218,7 @@ class TasksHandlerTest {
     }
 
     @Test
-    void testDeleteTaskById() throws IOException, InterruptedException, TimeOverlapException {
+    void testDeleteTaskById() throws IOException, InterruptedException {
         Task task = new Task("Test 2", "Testing task 2", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         manager.addTask(task);
@@ -256,7 +255,7 @@ class TasksHandlerTest {
     }
 
     @Test
-    void testDeleteTaskWithIncorrectId() throws IOException, InterruptedException, TimeOverlapException {
+    void testDeleteTaskWithIncorrectId() throws IOException, InterruptedException {
         Task task = new Task("Test 2", "Testing task 2", TaskStatus.NEW, 90,
                 LocalDateTime.now());
         manager.addTask(task);
@@ -278,7 +277,7 @@ class TasksHandlerTest {
     }
 
     @Test
-    void testAddTaskWithCrossStartTime() throws IOException, InterruptedException, TimeOverlapException {
+    void testAddTaskWithCrossStartTime() throws IOException, InterruptedException {
         Task task1 = new Task("Test 1", "Testing task 1", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 5, 2, 9, 0));
         manager.addTask(task1);
@@ -306,7 +305,7 @@ class TasksHandlerTest {
     }
 
     @Test
-    void testUpdateTaskWithCrossStartTime() throws IOException, InterruptedException, TimeOverlapException {
+    void testUpdateTaskWithCrossStartTime() throws IOException, InterruptedException {
         Task task1 = new Task("Test 1", "Testing task 1", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 5, 2, 9, 0));
         manager.addTask(task1);

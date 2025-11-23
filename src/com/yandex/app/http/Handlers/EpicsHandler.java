@@ -111,13 +111,13 @@ public class EpicsHandler extends BaseHttpHandler {
                 return;
             }
 
-            Epic epic = taskManager.getEpicById(epicId.get());
-            if (epic == null) {
+            List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId.get());
+
+            if (subtasks == null) {
                 sendNotFound(exchange);
                 return;
             }
 
-            List<Subtask> subtasks = taskManager.getEpicSubtasks(epicId.get());
             sendText(exchange, gson.toJson(subtasks), 200);
 
         } catch (Exception e) {

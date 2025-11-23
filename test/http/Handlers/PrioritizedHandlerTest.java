@@ -1,6 +1,5 @@
 package http.Handlers;
 
-import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.http.HttpTaskServer;
 import com.yandex.app.model.Task;
 import com.yandex.app.model.TaskStatus;
@@ -42,7 +41,7 @@ class PrioritizedHandlerTest {
     }
 
     @Test
-    void testPrioritizedHistory() throws IOException, InterruptedException, TimeOverlapException {
+    void testPrioritizedHistory() throws IOException, InterruptedException {
         Task task1 = new Task("Test 1", "Testing task 1", TaskStatus.NEW, 90,
                 LocalDateTime.of(2025, 5, 2, 9, 0));
         manager.addTask(task1);

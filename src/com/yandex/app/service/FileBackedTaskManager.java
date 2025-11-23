@@ -1,7 +1,6 @@
 package com.yandex.app.service;
 
 import com.yandex.app.exceptions.ManagerSaveException;
-import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.model.*;
 
 import java.io.File;
@@ -150,21 +149,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     @Override
-    public Task addTask(Task task) throws TimeOverlapException {
+    public Task addTask(Task task) {
         Task newTask = super.addTask(task);
         save();
         return newTask;
     }
 
     @Override
-    public Epic addEpic(Epic epic) throws TimeOverlapException {
+    public Epic addEpic(Epic epic) {
         Epic newEpic = super.addEpic(epic);
         save();
         return newEpic;
     }
 
     @Override
-    public Subtask addSubtask(Subtask subtask) throws TimeOverlapException {
+    public Subtask addSubtask(Subtask subtask) {
         Subtask newSubtask = super.addSubtask(subtask);
         save();
         return newSubtask;
@@ -207,19 +206,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     @Override
-    public void updateTask(Task task) throws TimeOverlapException {
+    public void updateTask(Task task) {
         super.updateTask(task);
         save();
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) throws TimeOverlapException {
+    public void updateSubtask(Subtask subtask) {
         super.updateSubtask(subtask);
         save();
     }
 
     @Override
-    public void updateEpic(Epic epic) throws TimeOverlapException {
+    public void updateEpic(Epic epic) {
         super.updateEpic(epic);
         save();
     }

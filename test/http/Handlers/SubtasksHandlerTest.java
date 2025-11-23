@@ -3,7 +3,6 @@ package http.Handlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.yandex.app.exceptions.TimeOverlapException;
 import com.yandex.app.http.HttpTaskServer;
 import com.yandex.app.http.adapters.DurationAdapter;
 import com.yandex.app.http.adapters.LocalDateTimeAdapter;
@@ -42,7 +41,7 @@ class SubtasksHandlerTest {
     }
 
     @BeforeEach
-    void setUp() throws TimeOverlapException {
+    void setUp() {
         manager.deleteAllTasks();
         manager.deleteAllSubtasks();
         manager.deleteAllEpics();
@@ -77,7 +76,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testMissingMethod() throws IOException, InterruptedException, TimeOverlapException {
+    void testMissingMethod() throws IOException, InterruptedException {
         Subtask subtask = new Subtask("Test 1", "Testing subtask 1", TaskStatus.NEW,
                 90, LocalDateTime.now(), epicId);
         manager.addSubtask(subtask);
@@ -100,7 +99,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testGetSubtasks() throws IOException, InterruptedException, TimeOverlapException {
+    void testGetSubtasks() throws IOException, InterruptedException {
         Subtask subtask = new Subtask("Test 1", "Testing subtask 1", TaskStatus.NEW,
                 90, LocalDateTime.now(), epicId);
         manager.addSubtask(subtask);
@@ -150,7 +149,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testUpdateSubtask() throws IOException, InterruptedException, TimeOverlapException {
+    void testUpdateSubtask() throws IOException, InterruptedException {
         Subtask subtask1 = new Subtask("Test 1", "Testing subtask 1", TaskStatus.NEW,
                 90, LocalDateTime.of(2025, 5, 2, 9, 0), epicId);
         manager.addSubtask(subtask1);
@@ -205,7 +204,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testGetSubtaskById() throws IOException, InterruptedException, TimeOverlapException {
+    void testGetSubtaskById() throws IOException, InterruptedException {
         Subtask subtask = new Subtask("Test 2", "Testing subtask 2", TaskStatus.NEW,
                 90, LocalDateTime.now(), epicId);
         manager.addSubtask(subtask);
@@ -227,7 +226,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testDeleteSubtaskById() throws IOException, InterruptedException, TimeOverlapException {
+    void testDeleteSubtaskById() throws IOException, InterruptedException {
         Subtask subtask = new Subtask("Test 2", "Testing subtask 2", TaskStatus.NEW,
                 90, LocalDateTime.now(), epicId);
         manager.addSubtask(subtask);
@@ -264,7 +263,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testDeleteSubtaskWithIncorrectId() throws IOException, InterruptedException, TimeOverlapException {
+    void testDeleteSubtaskWithIncorrectId() throws IOException, InterruptedException {
         Subtask subtask = new Subtask("Test 2", "Testing subtask 2", TaskStatus.NEW,
                 90, LocalDateTime.now(), epicId);
         manager.addSubtask(subtask);
@@ -286,7 +285,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testAddSubtaskWithCrossStartTime() throws IOException, InterruptedException, TimeOverlapException {
+    void testAddSubtaskWithCrossStartTime() throws IOException, InterruptedException {
         Subtask subtask1 = new Subtask("Test 1", "Testing subtask 1", TaskStatus.NEW,
                 90, LocalDateTime.of(2025, 5, 2, 9, 0), epicId);
         manager.addSubtask(subtask1);
@@ -314,7 +313,7 @@ class SubtasksHandlerTest {
     }
 
     @Test
-    void testUpdateSubtaskWithCrossStartTime() throws IOException, InterruptedException, TimeOverlapException {
+    void testUpdateSubtaskWithCrossStartTime() throws IOException, InterruptedException {
         Subtask subtask1 = new Subtask("Test 1", "Testing subtask 1", TaskStatus.NEW,
                 90, LocalDateTime.of(2025, 5, 2, 9, 0), epicId);
         manager.addSubtask(subtask1);
