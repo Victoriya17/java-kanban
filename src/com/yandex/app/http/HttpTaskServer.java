@@ -1,7 +1,9 @@
 package com.yandex.app.http;
+
 import java.io.IOException;
 
 import com.sun.net.httpserver.HttpServer;
+
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -14,7 +16,6 @@ import com.yandex.app.http.Handlers.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-
 public class HttpTaskServer {
     private final HttpServer httpServer;
     private final TaskManager taskManager;
@@ -25,7 +26,6 @@ public class HttpTaskServer {
             .registerTypeAdapter(Duration.class, new DurationAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
-
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.httpServer = HttpServer.create(new InetSocketAddress(port), 0);
