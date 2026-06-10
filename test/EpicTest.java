@@ -36,7 +36,6 @@ class EpicTest {
                 "попытке добавления Эпика в себя, в виде подзадачи");
     }
 
-
     @Test
     void checkSetDuration() {
         epic1.setDuration(Duration.ofMinutes(15));
